@@ -140,3 +140,22 @@
 
   (testing "es igual 'if a 'IF debe ser falso")
   (is (= false (igual? 6 "6"))))
+
+(deftest lower-case-arg-test
+  (testing "lower case de 'IF debe devolver 'if")
+  (is (= "if" (lower-case-arg 'IF)))
+
+  (testing "lower case de 6 debe devolver 6")
+  (is (= 6 (lower-case-arg 6))))
+
+(deftest boolean-parse-test
+  (testing "true debe parsearse como #t")
+  (is (= (symbol "#t") (boolean-parse true)))
+  
+  (testing "false debe parsearse como #f")
+  (is (= (symbol "#f") (boolean-parse false))))
+
+(deftest fnc-equal?-test
+  (let [true-sym (symbol "#t"), false-sym (symbol "#f")]
+    (testing "equal (A a) debe devolver #t")
+    (is (= true-sym (fnc-equal? '(A a))))))

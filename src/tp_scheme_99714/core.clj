@@ -643,9 +643,17 @@
 ; #t
 ; user=> (fnc-equal? '(1 1 2 1))
 ; #f
-;; (defn fnc-equal?
-;;   "Compara elementos. Si son iguales, devuelve #t. Si no, #f."
-;; )
+
+(defn boolean-parse
+  "Traduce los booleanos a simbolos. true -> #t, false -> #f"
+  [arg]
+  ({true (symbol "#t"), false (symbol "#f")} arg))
+
+
+(defn fnc-equal?
+  "Compara elementos. Si son iguales, devuelve #t. Si no, #f."
+  [lista]
+  (boolean-parse true))
 
 ; user=> (fnc-read ())
 ; (hola
