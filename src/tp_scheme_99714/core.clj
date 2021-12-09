@@ -689,64 +689,25 @@
       (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '< (first invalid-args))
       :else (boolean-parse (apply < lista)))))
 
-; user=> (fnc-mayor ())
-; #t
-; user=> (fnc-mayor '(1))
-; #t
-; user=> (fnc-mayor '(2 1))
-; #t
-; user=> (fnc-mayor '(3 2 1))
-; #t
-; user=> (fnc-mayor '(4 3 2 1))
-; #t
-; user=> (fnc-mayor '(4 2 2 1))
-; #f
-; user=> (fnc-mayor '(4 2 1 4))
-; #f
-; user=> (fnc-mayor '(A 3 2 1))
-; (;ERROR: >: Wrong type in arg1 A)
-; user=> (fnc-mayor '(3 A 2 1))
-; (;ERROR: >: Wrong type in arg2 A)
-; user=> (fnc-mayor '(3 2 A 1))
-; (;ERROR: >: Wrong type in arg2 A)
 (defn fnc-mayor
   "Devuelve #t si los numeros de una lista estan en orden estrictamente decreciente; si no, #f."
   [lista]
   (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
     (cond
       (empty? lista) (boolean-parse true)
-      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '< arg1)
-      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '< (first invalid-args))
+      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '> arg1)
+      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '> (first invalid-args))
       :else (boolean-parse (apply > lista)))))
 
-; user=> (fnc-mayor-o-igual ())
-; #t
-; user=> (fnc-mayor-o-igual '(1))
-; #t
-; user=> (fnc-mayor-o-igual '(2 1))
-; #t
-; user=> (fnc-mayor-o-igual '(3 2 1))
-; #t
-; user=> (fnc-mayor-o-igual '(4 3 2 1))
-; #t
-; user=> (fnc-mayor-o-igual '(4 2 2 1))
-; #t
-; user=> (fnc-mayor-o-igual '(4 2 1 4))
-; #f
-; user=> (fnc-mayor-o-igual '(A 3 2 1))
-; (;ERROR: >=: Wrong type in arg1 A)
-; user=> (fnc-mayor-o-igual '(3 A 2 1))
-; (;ERROR: >=: Wrong type in arg2 A)
-; user=> (fnc-mayor-o-igual '(3 2 A 1))
-; (;ERROR: >=: Wrong type in arg2 A)
-(defn fnc-mayor-o-igual 
+(defn fnc-mayor-o-igual
   "Devuelve #t si los numeros de una lista estan en orden decreciente; si no, #f."
   [lista]
-  (let [ari (controlar-aridad-fnc lista 1 'car), arg1 (first lista)]
-       (cond
-         (error? ari) ari
-         (or (not (seq? arg1)) (empty? arg1)) (generar-mensaje-error :wrong-type-arg1 'car arg1)
-         :else (first arg1))))
+  (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
+    (cond
+      (empty? lista) (boolean-parse true)
+      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '>= arg1)
+      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '>= (first invalid-args))
+      :else (boolean-parse (apply >= lista)))))
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
 ; (32 (x 6 y 11 z "hola"))

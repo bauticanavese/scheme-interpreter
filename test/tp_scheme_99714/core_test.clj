@@ -3,57 +3,55 @@
             [tp-scheme-99714.core :refer :all]
             [clojure.string :refer [includes?]]))
 
-(deftest fnc-sumar-test  
+(deftest fnc-sumar-test
   (testing "sumar 4 más 3 debe dar 7")
   (is (= 7 (fnc-sumar '(3 4))))
 
   (testing "sumar cadena vacía debe dar 0")
   (is (= 0 (fnc-sumar ())))
-  
+
   (testing "sumar solo 3 debe dar 3")
   (is (= 3 (fnc-sumar '(3))))
-  
+
   (testing "sumar 3, 4, 5 debe dar 12")
   (is (= 12 (fnc-sumar '(3 4 5))))
-  
+
   (testing "sumar 0.5, 2 debe dar 2.5")
   (is (= 2.5 (fnc-sumar '(0.5 2))))
-  
+
   (testing "sumar 3, 4, 5, 6 debe dar 18")
   (is (= 18 (fnc-sumar '(3 4 5 6))))
-  
+
   (testing "sumar A, 4, 5, 6 debe devolver un error: +: Wrong type in arg1 A")
-  (is (= true (includes? (fnc-sumar '(A 4 5 6)) ";ERROR: +: Wrong type in arg1 A" )))
-  
+  (is (= true (includes? (fnc-sumar '(A 4 5 6)) ";ERROR: +: Wrong type in arg1 A")))
+
   (testing "sumar 3, A, 5, 6 debe devolver un error: +: Wrong type in arg2 A")
-  (is (= true (includes? (fnc-sumar '(3 A 5 6)) ";ERROR: +: Wrong type in arg2 A" )))
-  
+  (is (= true (includes? (fnc-sumar '(3 A 5 6)) ";ERROR: +: Wrong type in arg2 A")))
+
   (testing "sumar 3, 4, A, 6 debe devolver un error: +: Wrong type in arg2 A")
-  (is (= true (includes? (fnc-sumar '(3 4 A 6)) ";ERROR: +: Wrong type in arg2 A" )))
-  
+  (is (= true (includes? (fnc-sumar '(3 4 A 6)) ";ERROR: +: Wrong type in arg2 A")))
+
   (testing "sumar B, C debe devolver un error: +: Wrong type in arg1 B")
-  (is (= true (includes? (fnc-sumar '(B C)) ";ERROR: +: Wrong type in arg1 B" )))
-)
+  (is (= true (includes? (fnc-sumar '(B C)) ";ERROR: +: Wrong type in arg1 B"))))
 
 (deftest fnc-append-test
   (testing "concatenar (1 2) y (3 4) debe devovler (1 2 3 4)")
   (is (= '(1 2 3 4) (fnc-append '((1 2) (3 4)))))
-  
+
   (testing "concatenar (1 2) y () debe devovler (1 2)")
   (is (= '(1 2) (fnc-append '((1 2) ()))))
-  
+
   (testing "concatenar () debe devovler ()")
   (is (= '() (fnc-append '(()))))
-  
+
   (testing "concatenar (1 2), (3), (4 5), (6 7) debe devovler (1 2 3 4 5 6 7)")
   (is (= '(1 2 3 4 5 6 7) (fnc-append '((1 2) (3) (4 5) (6 7)))))
-    
+
   (testing "concatenar (1 2) 3 (4 5) (6 7) debe devovler ERROR: append: Wrong type in arg 3")
   (is (= true (includes? (fnc-append '((1 2) 3 (4 5) (6 7))) ";ERROR: append: Wrong type in arg 3")))
-    
+
   (testing "concatenar (1 2) A (4 5) (6 7) debe devovler ERROR: append: Wrong type in arg A")
-  (is (= true (includes? (fnc-append '((1 2) A (4 5) (6 7))) ";ERROR: append: Wrong type in arg A")))
-)
+  (is (= true (includes? (fnc-append '((1 2) A (4 5) (6 7))) ";ERROR: append: Wrong type in arg A"))))
 
 (deftest fnc-restar-test
   (testing "restar 3 menos 4 debe devovler -1")
@@ -96,8 +94,7 @@
 
   (testing "actualizar ambiente (a 1 b 2 c 3) con un error cuya clave no existe, no modifica el ambiente")
   (let [amb-inicial '(a 1 b 2 c 3), error (list (symbol ";ERROR:") 'mal 'hecho)]
-    (is (= amb-inicial (actualizar-amb amb-inicial 'w error))))
-  )
+    (is (= amb-inicial (actualizar-amb amb-inicial 'w error)))))
 
 (deftest error?-test
   (testing "lista que comienza con ;ERROR: debe devolver verdadero")
@@ -108,10 +105,9 @@
 
   (testing "lista (mal hecho) debe devolver verdadero")
   (is (= false (error? (list 'mal 'hecho))))
-  
+
   (testing "argumento no es una lista debe devolver falso")
-  (is (= false (error? 10)))
-)
+  (is (= false (error? 10))))
 
 (deftest buscar-test
   (testing "buscar dada la clave 'c en el ambiente '(a 1 b 2 c 3 d 4 e 5) devuelve 3")
@@ -119,8 +115,7 @@
 
   (testing "buscar 'f en el ambiente '(a 1 b 2 c 3 d 4 e 5) devuelve un error: unbound-variable")
   (let [error-esperado (list (symbol ";ERROR:") 'unbound (symbol "variable:") 'f)]
-    (is (= error-esperado (buscar 'f '(a 1 b 2 c 3 d 4 e 5)))))
-)
+    (is (= error-esperado (buscar 'f '(a 1 b 2 c 3 d 4 e 5))))))
 
 (deftest igual?-test
   (testing "es igual 'if a 'IF debe ser verdadero")
@@ -238,14 +233,48 @@
 
     (testing "es mayor (4 2 1 4) debe devolver #f")
     (is (= false-sym (fnc-mayor '(4 2 1 4))))
-    
+
     (testing "es mayor (A 3 2 1) debe devolver (;ERROR: >: Wrong type in arg1 A)")
     (is (= error-arg1 (fnc-mayor '(A 3 2 1))))
-    
+
     (testing "es mayor (3 A 2 1) debe devolver (;ERROR: >: Wrong type in arg2 A)")
     (is (= error-arg2 (fnc-mayor '(3 A 2 1))))
 
     (testing "es mayor (3 2 A 1) debe devolver (;ERROR: >: Wrong type in arg2 A)")
-    (is (= error-arg2 (fnc-mayor '(3 2 A 1))))    
-    ))
+    (is (= error-arg2 (fnc-mayor '(3 2 A 1))))))
+
+(deftest fnc-mayor-o-igual-test
+  (let [true-sym (symbol "#t")
+        false-sym (symbol "#f")
+        error-arg1 (list (symbol ";ERROR:") (symbol ">=:") 'Wrong 'type 'in 'arg1 'A)
+        error-arg2 (list (symbol ";ERROR:") (symbol ">=:") 'Wrong 'type 'in 'arg2 'A)]
+    (testing "es mayor o igual () debe devolver #t")
+    (is (= true-sym (fnc-mayor-o-igual ())))
+
+    (testing "es mayor o igual (1) debe devolver #t")
+    (is (= true-sym (fnc-mayor-o-igual '(1))))
+
+    (testing "es mayor o igual (2 1) debe devolver #t")
+    (is (= true-sym (fnc-mayor-o-igual '(2 1))))
+
+    (testing "es mayor o igual (3 2 1) debe devolver #t")
+    (is (= true-sym (fnc-mayor-o-igual '(3 2 1))))
+
+    (testing "es mayor o igual (4 3 2 1) debe devolver #t")
+    (is (= true-sym (fnc-mayor-o-igual '(4 3 2 1))))
+
+    (testing "es mayor o igual (4 2 2 1) debe devolver #t")
+    (is (= true-sym (fnc-mayor-o-igual '(4 2 2 1))))
+
+    (testing "es mayor o igual (4 2 1 4) debe devolver #f")
+    (is (= false-sym (fnc-mayor-o-igual '(4 2 1 4))))
+
+    (testing "es mayor o igual (A 3 2 1) debe devolver (;ERROR: >=: Wrong type in arg1 A)")
+    (is (= error-arg1 (fnc-mayor-o-igual '(A 3 2 1))))
+
+    (testing "es mayor o igual (3 A 2 1) debe devolver (;ERROR: >=: Wrong type in arg2 A)")
+    (is (= error-arg2 (fnc-mayor-o-igual '(3 A 2 1))))
+
+    (testing "es mayor o igual (3 2 A 1) debe devolver (;ERROR: >=: Wrong type in arg2 A)")
+    (is (= error-arg2 (fnc-mayor-o-igual '(3 2 A 1))))))
 
