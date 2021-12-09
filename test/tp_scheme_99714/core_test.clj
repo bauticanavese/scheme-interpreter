@@ -112,3 +112,7 @@
   (testing "argumento no es una lista debe devolver falso")
   (is (= false (error? 10)))
 )
+
+(deftest buscar-test
+  (testing "buscar dada la clave 'c en el ambiente '(a 1 b 2 c 3 d 4 e 5) devuelve 3")
+  (is (= 3 (buscar 'c '(a 1 b 2 c 3 d 4 e 5)))))
