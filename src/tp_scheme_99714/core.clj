@@ -573,10 +573,12 @@
 ; (a 1 b 2 c 3)
 ; user=> (actualizar-amb () 'b 7)
 ; (b 7)
-;; (defn actualizar-amb
-;;   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
-;;   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
-;; )
+(defn actualizar-amb
+  "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
+  Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
+  [amb clave valor]
+  (concat amb (list clave valor))
+)
 
 ; user=> (buscar 'c '(a 1 b 2 c 3 d 4 e 5))
 ; 3
@@ -634,7 +636,7 @@
   [lista]
   (let [invalid-args (filter (fn [x] (not (list? x))) lista)]
   (cond
-    (not (empty? invalid-args)) (generar-mensaje-error :wrong-type-arg 'append (first invalid-args))
+    (seq invalid-args) (generar-mensaje-error :wrong-type-arg 'append (first invalid-args))
     :else (apply concat lista)
   )
 ))
@@ -681,7 +683,7 @@
   (cond
     (empty? lista) 0
     (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '+ arg1)
-    (not (empty? invalid-args)) (generar-mensaje-error :wrong-type-arg2 '+ (first invalid-args))
+    (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '+ (first invalid-args))
     :else (reduce + lista)))
 )
 
@@ -692,7 +694,7 @@
   (cond
     (empty? lista) (generar-mensaje-error :wrong-number-args-oper '-)
     (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '- arg1)
-    (not (empty? invalid-args)) (generar-mensaje-error :wrong-type-arg2 '- (first invalid-args))
+    (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '- (first invalid-args))
     (empty? (rest lista)) (- arg1)
     :else (reduce - lista))
   )
