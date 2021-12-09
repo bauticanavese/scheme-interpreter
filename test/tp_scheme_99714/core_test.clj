@@ -115,4 +115,9 @@
 
 (deftest buscar-test
   (testing "buscar dada la clave 'c en el ambiente '(a 1 b 2 c 3 d 4 e 5) devuelve 3")
-  (is (= 3 (buscar 'c '(a 1 b 2 c 3 d 4 e 5)))))
+  (is (= 3 (buscar 'c '(a 1 b 2 c 3 d 4 e 5))))
+
+  (testing "buscar 'f en el ambiente '(a 1 b 2 c 3 d 4 e 5) devuelve un error: unbound-variable")
+  (let [error-esperado (list (symbol ";ERROR:") 'unbound (symbol "variable:") 'f)]
+    (is (= error-esperado (buscar 'f '(a 1 b 2 c 3 d 4 e 5)))))
+)
