@@ -570,7 +570,7 @@
   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
   [amb clave valor]
     (cond
-      (and (list? valor) (= (symbol ";ERROR:") (first valor))) amb
+      (error? valor) amb
       :else (apply concat (assoc (apply array-map amb) clave valor)))
 )
 
@@ -583,16 +583,12 @@
 ;;    y devuelve el valor asociado. Devuelve un error :unbound-variable si no la encuentra."
 ;; )
 
-; user=> (error? (list (symbol ";ERROR:") 'mal 'hecho))
-; true
-; user=> (error? (list 'mal 'hecho))
-; false
-; user=> (error? (list (symbol ";WARNING:") 'mal 'hecho))
-; true
 (defn error?
   "Devuelve true o false, segun sea o no el arg. una lista con `;ERROR:` o `;WARNING:` como primer elemento."
-  [lista]
-  (or (= (symbol ";ERROR:") (first lista)) (= (symbol ";WARNING:") (first lista)))
+  [arg]
+  (and (list? arg)
+       (let [primer-elemento (first arg)]
+         (or (= (symbol ";ERROR:") primer-elemento) (= (symbol ";WARNING:") primer-elemento))))
 )
 
 ; user=> (proteger-bool-en-str "(or #F #f #t #T)")
