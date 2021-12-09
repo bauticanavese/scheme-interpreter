@@ -627,33 +627,18 @@
   )
 ))
 
-; user=> (fnc-equal? ())
-; #t
-; user=> (fnc-equal? '(A))
-; #t
-; user=> (fnc-equal? '(A a))
-; #t
-; user=> (fnc-equal? '(A a A))
-; #t
-; user=> (fnc-equal? '(A a A a))
-; #t
-; user=> (fnc-equal? '(A a A B))
-; #f
-; user=> (fnc-equal? '(1 1 1 1))
-; #t
-; user=> (fnc-equal? '(1 1 2 1))
-; #f
-
 (defn boolean-parse
   "Traduce los booleanos a simbolos. true -> #t, false -> #f"
   [arg]
   ({true (symbol "#t"), false (symbol "#f")} arg))
 
-
 (defn fnc-equal?
   "Compara elementos. Si son iguales, devuelve #t. Si no, #f."
   [lista]
-  (boolean-parse true))
+  (let [primer-elemento (first lista)]
+    (boolean-parse
+     (apply = true (map (fn [x] (igual? x primer-elemento)) (rest lista)))))
+  )
 
 ; user=> (fnc-read ())
 ; (hola

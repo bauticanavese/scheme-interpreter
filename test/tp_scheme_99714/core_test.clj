@@ -156,6 +156,22 @@
   (is (= (symbol "#f") (boolean-parse false))))
 
 (deftest fnc-equal?-test
+  ;;  user=> (fnc-equal? ())
+; #t
+; user=> (fnc-equal? '(A))
+; #t
+; user=> (fnc-equal? '(A a))
+; #t
+; user=> (fnc-equal? '(A a A))
+; #t
+; user=> (fnc-equal? '(A a A a))
+; #t
+; user=> (fnc-equal? '(A a A B))
+; #f
+; user=> (fnc-equal? '(1 1 1 1))
+; #t
+; user=> (fnc-equal? '(1 1 2 1))
+; #f
   (let [true-sym (symbol "#t"), false-sym (symbol "#f")]
     (testing "equal (A a) debe devolver #t")
-    (is (= true-sym (fnc-equal? '(A a))))))
+    (is (= true-sym (fnc-equal? '(A a a a a))))))
