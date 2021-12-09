@@ -702,7 +702,10 @@
 (defn fnc-menor
   "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
   [lista]
-  (boolean-parse (apply < lista)))
+  (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
+    (cond
+      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '< arg1)
+      :else (boolean-parse (apply < lista)))))
 
 ; user=> (fnc-mayor ())
 ; #t

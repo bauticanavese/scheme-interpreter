@@ -182,7 +182,8 @@
     (is (= true-sym (fnc-equal? ())))))
 
 (deftest fnc-menor-test
-  (let [true-sym (symbol "#t"), false-sym (symbol "#f")]
+  (let [true-sym (symbol "#t"), false-sym (symbol "#f"), 
+        error-arg1 (list (symbol ";ERROR:") (symbol "<:") 'Wrong 'type 'in 'arg1 'A)]
     (testing "es menor (1 2) debe devolver #t")
     (is (= true-sym (fnc-menor '(1 2))))
 
@@ -193,4 +194,7 @@
     (is (= true-sym (fnc-menor '(1 2 3 4))))
 
     (testing "es menor (1 2 2 4) debe devolver #f")
-    (is (= false-sym (fnc-menor '(1 2 2 4))))))
+    (is (= false-sym (fnc-menor '(1 2 2 4))))
+
+    (testing "es menor (A 1 2 4) debe devolver (;ERROR: <: Wrong type in arg1 A)")
+    (is (= error-arg1 (fnc-menor '(A 1 2 3 4))))))
