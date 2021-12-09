@@ -124,5 +124,5 @@
 
 (deftest igual?-test
   (testing "'if' es igual a 'IF debe ser verdadero")
-  (is (= true (igual? 'if' 'IF)))
+  (is (= true (igual? 'if 'IF)))
 )

@@ -620,7 +620,7 @@
 (defn igual?
   "Verifica la igualdad entre dos elementos al estilo de Scheme (case-insensitive)"
   [arg1 arg2]
-  true
+  (= (lower-case arg1) (lower-case arg2))
 )
 
 (defn fnc-append
