@@ -227,16 +227,25 @@
     (testing "es mayor (2 1) debe devolver #t")
     (is (= true-sym (fnc-mayor '(2 1))))
 
-    (testing "es menor (3 2 1) debe devolver #t")
+    (testing "es mayor (3 2 1) debe devolver #t")
     (is (= true-sym (fnc-mayor '(3 2 1))))
 
-    (testing "es menor (4 3 2 1) debe devolver #t")
+    (testing "es mayor (4 3 2 1) debe devolver #t")
     (is (= true-sym (fnc-mayor '(4 3 2 1))))
 
-    (testing "es menor (4 2 2 1) debe devolver #f")
+    (testing "es mayor (4 2 2 1) debe devolver #f")
     (is (= false-sym (fnc-mayor '(4 2 2 1))))
 
-    (testing "es menor (4 2 1 4) debe devolver #f")
+    (testing "es mayor (4 2 1 4) debe devolver #f")
     (is (= false-sym (fnc-mayor '(4 2 1 4))))
-))
+    
+    (testing "es mayor (A 3 2 1) debe devolver (;ERROR: >: Wrong type in arg1 A)")
+    (is (= error-arg1 (fnc-mayor '(A 3 2 1))))
+    
+    (testing "es mayor (3 A 2 1) debe devolver (;ERROR: >: Wrong type in arg2 A)")
+    (is (= error-arg2 (fnc-mayor '(3 A 2 1))))
+
+    (testing "es mayor (3 2 A 1) debe devolver (;ERROR: >: Wrong type in arg2 A)")
+    (is (= error-arg2 (fnc-mayor '(3 2 A 1))))    
+    ))
 
