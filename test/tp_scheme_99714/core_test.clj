@@ -279,6 +279,23 @@
     (is (= error-arg2 (fnc-mayor-o-igual '(3 2 A 1))))))
 
 (deftest evaluar-escalar-test
-  (testing "evaluar escalar 32 '(x 6 y 11 z 'hola') devuelve (32 (x 6 y 11 z 'hola'))")
-  (let [escalar 32, amb '(x 6 y 11 z "hola")]
-    (is (= (list escalar amb) (evaluar-escalar escalar amb)))))
+  (let [amb '(x 6 y 11 z "hola")]
+    (testing "evaluar escalar 32 '(x 6 y 11 z 'hola') devuelve (32 (x 6 y 11 z 'hola'))")
+    (let [escalar 32]
+      (is (= (list escalar amb) (evaluar-escalar escalar amb))))
+
+    (testing "evaluar escalar 'chau' '(x 6 y 11 z 'hola') devuelve ('chau' (x 6 y 11 z 'hola'))")
+    (let [escalar "chau"]
+      (is (= (list escalar amb) (evaluar-escalar escalar amb))))
+
+    (testing "evaluar escalar 'y '(x 6 y 11 z 'hola') devuelve (11 (x 6 y 11 z 'hola'))")
+    (let [escalar 'y]
+      (is (= (list 11 amb) (evaluar-escalar escalar amb))))
+
+    (testing "evaluar escalar 'z '(x 6 y 11 z 'hola') devuelve ('hola' (x 6 y 11 z 'hola'))")
+    (let [escalar 'z]
+      (is (= (list "hola" amb) (evaluar-escalar escalar amb))))
+
+    (testing "evaluar escalar 'n '(x 6 y 11 z 'hola') devuelve ((;ERROR: unbound variable: n) (x 6 y 11 z 'hola'))")
+    (let [escalar 'n, error (list (symbol ";ERROR:") 'unbound (symbol "variable:") 'n)]
+      (is (= (list error amb) (evaluar-escalar escalar amb))))))

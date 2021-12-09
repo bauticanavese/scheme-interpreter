@@ -720,7 +720,7 @@
 (defn evaluar-escalar
   "Evalua una expresion escalar. Devuelve una lista con el resultado y un ambiente."
   [escalar amb]
-  (list escalar amb)
+  (if (symbol? escalar) (list (buscar escalar amb) amb) (list escalar amb))
 )
 
 ; user=> (evaluar-define '(define x 2) '(x 1))
