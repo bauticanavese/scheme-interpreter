@@ -679,35 +679,33 @@
   )
 )
 
-(defn fnc-menor
-  "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
-  [lista]
+(defn evaluar-lista-numerica
+  "Aplica la funcion f tomando los elementos de la lista como argumentos.
+   Devuelve #t en el caso que la lista este vacía.
+   Valida los valores de la lista sean numéricos, devuelve 
+   (;ERROR: 'f': Wrong type in arg1 'arg') en el caso de que no."
+  [lista f]
   (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
     (cond
       (empty? lista) (boolean-parse true)
-      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '< arg1)
-      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '< (first invalid-args))
-      :else (boolean-parse (apply < lista)))))
+      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 f arg1)
+      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 f (first invalid-args))
+      :else (boolean-parse (apply (resolve f) lista)))))
+
+(defn fnc-menor
+  "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
+  [lista]
+  (evaluar-lista-numerica lista '<))
 
 (defn fnc-mayor
   "Devuelve #t si los numeros de una lista estan en orden estrictamente decreciente; si no, #f."
   [lista]
-  (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
-    (cond
-      (empty? lista) (boolean-parse true)
-      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '> arg1)
-      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '> (first invalid-args))
-      :else (boolean-parse (apply > lista)))))
+  (evaluar-lista-numerica lista '>))
 
 (defn fnc-mayor-o-igual
   "Devuelve #t si los numeros de una lista estan en orden decreciente; si no, #f."
   [lista]
-  (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
-    (cond
-      (empty? lista) (boolean-parse true)
-      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '>= arg1)
-      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '>= (first invalid-args))
-      :else (boolean-parse (apply >= lista)))))
+  (evaluar-lista-numerica lista '>=))
 
 ; user=> (evaluar-escalar 32 '(x 6 y 11 z "hola"))
 ; (32 (x 6 y 11 z "hola"))
