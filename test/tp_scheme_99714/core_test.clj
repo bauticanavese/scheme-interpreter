@@ -83,9 +83,15 @@
 (deftest actualizar-amb-test
   (testing "actualizar ambiente () con clave 'b y valor 7 debe devolver (b 7)")
   (is (= '(b 7) (actualizar-amb () 'b 7)))
-  
+
   (testing "actualizar ambiente (a 1 b 2 c 3) con clave 'd y valor 4 debe devolver (a 1 b 2 c 3 d 4)")
   (is (= '(a 1 b 2 c 3 d 4) (actualizar-amb '(a 1 b 2 c 3) 'd 4)))
 
   (testing "actualizar ambiente (a 1 b 2 c 3) con clave 'b y valor 4 debe devolver (a 1 b 4 c 3)")
-  (is (= '(a 1 b 4 c 3) (actualizar-amb '(a 1 b 2 c 3) 'b 4))))
+  (is (= '(a 1 b 4 c 3) (actualizar-amb '(a 1 b 2 c 3) 'b 4)))
+
+  (testing "actualizar ambiente (a 1 b 2 c 3) con error no modifica el ambiente")
+  (let [amb-inicial '(a 1 b 2 c 3), error (list (symbol ";ERROR:") 'mal 'hecho)]
+    (is (= amb-inicial (actualizar-amb amb-inicial 'b error))))
+
+)
