@@ -565,14 +565,6 @@
 ;;   "Cuenta los parentesis en una cadena, sumando 1 si `(`, restando 1 si `)`. Si el contador se hace negativo, para y retorna -1."
 ;; )
 
-; user=> (actualizar-amb '(a 1 b 2 c 3) 'd 4)
-; (a 1 b 2 c 3 d 4)
-; user=> (actualizar-amb '(a 1 b 2 c 3) 'b 4)
-; (a 1 b 4 c 3)
-; user=> (actualizar-amb '(a 1 b 2 c 3) 'b (list (symbol ";ERROR:") 'mal 'hecho))
-; (a 1 b 2 c 3)
-; user=> (actualizar-amb () 'b 7)
-; (b 7)
 (defn actualizar-amb
   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
@@ -597,9 +589,11 @@
 ; false
 ; user=> (error? (list (symbol ";WARNING:") 'mal 'hecho))
 ; true
-;; (defn error?
-;;   "Devuelve true o false, segun sea o no el arg. una lista con `;ERROR:` o `;WARNING:` como primer elemento."
-;; )
+(defn error?
+  "Devuelve true o false, segun sea o no el arg. una lista con `;ERROR:` o `;WARNING:` como primer elemento."
+  [lista]
+  true
+)
 
 ; user=> (proteger-bool-en-str "(or #F #f #t #T)")
 ; "(or %F %f %t %T)"

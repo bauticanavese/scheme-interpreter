@@ -90,8 +90,16 @@
   (testing "actualizar ambiente (a 1 b 2 c 3) con clave 'b y valor 4 debe devolver (a 1 b 4 c 3)")
   (is (= '(a 1 b 4 c 3) (actualizar-amb '(a 1 b 2 c 3) 'b 4)))
 
-  (testing "actualizar ambiente (a 1 b 2 c 3) con error no modifica el ambiente")
+  (testing "actualizar ambiente (a 1 b 2 c 3) con error cuya clave existe, no actualiza el ambiente")
   (let [amb-inicial '(a 1 b 2 c 3), error (list (symbol ";ERROR:") 'mal 'hecho)]
     (is (= amb-inicial (actualizar-amb amb-inicial 'b error))))
 
-)
+  (testing "actualizar ambiente (a 1 b 2 c 3) con un error cuya clave no existe, no modifica el ambiente")
+  (let [amb-inicial '(a 1 b 2 c 3), error (list (symbol ";ERROR:") 'mal 'hecho)]
+    (is (= amb-inicial (actualizar-amb amb-inicial 'w error))))
+  )
+
+(deftest error?-test
+  (testing "lista que comienza con ;ERROR: es verdadero")
+  (is (= true (error? (list (symbol ";ERROR:") 'mal 'hecho))))
+  )
