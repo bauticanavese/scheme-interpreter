@@ -685,22 +685,6 @@
     :else (reduce + lista)))
 )
 
-; user=> (fnc-restar ())
-; (;ERROR: -: Wrong number of args given)
-; user=> (fnc-restar '(3))
-; -3
-; user=> (fnc-restar '(3 4))
-; -1
-; user=> (fnc-restar '(3 4 5))
-; -6
-; user=> (fnc-restar '(3 4 5 6))
-; -12
-; user=> (fnc-restar '(A 4 5 6))
-; (;ERROR: -: Wrong type in arg1 A)
-; user=> (fnc-restar '(3 A 5 6))
-; (;ERROR: -: Wrong type in arg2 A)
-; user=> (fnc-restar '(3 4 A 6))
-; (;ERROR: -: Wrong type in arg2 A)
 (defn fnc-restar
   "Resta los elementos de un lista."
   [lista]
@@ -709,6 +693,7 @@
     (empty? lista) (generar-mensaje-error :wrong-number-args-oper '-)
     (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '- arg1)
     (not (empty? invalid-args)) (generar-mensaje-error :wrong-type-arg2 '- (first invalid-args))
+    (empty? (rest lista)) (- arg1)
     :else (reduce - lista))
   )
 )

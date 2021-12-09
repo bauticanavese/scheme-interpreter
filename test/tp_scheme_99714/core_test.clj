@@ -60,10 +60,13 @@
   (is (= -1 (fnc-restar '(3 4))))
 
   (testing "restar (3) debe devolver -3")
-  (is (= 3 (fnc-restar '(3))))
+  (is (= -3 (fnc-restar '(3))))
 
   (testing "restar (3 4 5) debe devolver -6")
   (is (= -6 (fnc-restar '(3 4 5))))
+
+  (testing "restar (3 4 5 6) debe devolver -12")
+  (is (= -12 (fnc-restar '(3 4 5 6))))
 
   (testing "restar (A 4 5 6) debe devolver (;ERROR: -: Wrong type in arg1 A)")
   (is (= true (includes? (fnc-restar '(A 4 5 6)) ";ERROR: -: Wrong type in arg1 A")))
