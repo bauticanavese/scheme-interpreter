@@ -577,8 +577,9 @@
   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
   [amb clave valor]
-  (concat amb (list clave valor))
-)
+  (let [amb-map (apply array-map amb)]
+    (apply concat (assoc amb-map clave valor))
+))
 
 ; user=> (buscar 'c '(a 1 b 2 c 3 d 4 e 5))
 ; 3
