@@ -299,3 +299,13 @@
     (testing "evaluar escalar 'n '(x 6 y 11 z 'hola') devuelve ((;ERROR: unbound variable: n) (x 6 y 11 z 'hola'))")
     (let [escalar 'n, error (list (symbol ";ERROR:") 'unbound (symbol "variable:") 'n)]
       (is (= (list error amb) (evaluar-escalar escalar amb))))))
+
+(deftest proteger-bool-en-str-test
+  (testing "proteger bool en str para '(or #F #f #t #T)' debe devolver '(or %F %f %t %T)'")
+  (is (= "(or %F %f %t %T)" (proteger-bool-en-str "(or #F #f #t #T)")))
+
+  (testing "proteger bool en str para '(and (or #F #f #t #T) #T)' debe devolver '(and (or %F %f %t %T) %T)'")
+  (is (= "(and (or %F %f %t %T) %T)" (proteger-bool-en-str "(and (or #F #f #t #T) #T)")))
+
+  (testing "proteger bool en str para '' debe devolver ''")
+  (is (= "" (proteger-bool-en-str ""))))
