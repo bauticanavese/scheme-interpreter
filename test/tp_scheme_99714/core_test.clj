@@ -102,4 +102,9 @@
 (deftest error?-test
   (testing "lista que comienza con ;ERROR: es verdadero")
   (is (= true (error? (list (symbol ";ERROR:") 'mal 'hecho))))
-  )
+
+  (testing "lista que comienza con ;WARNING: es verdadero")
+  (is (= true (error? (list (symbol ";WARNING:") 'mal 'hecho))))
+
+  (testing "lista (mal hecho) no es un error")
+  (is (= false (error? (list 'mal 'hecho)))))

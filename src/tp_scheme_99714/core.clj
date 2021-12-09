@@ -592,7 +592,7 @@
 (defn error?
   "Devuelve true o false, segun sea o no el arg. una lista con `;ERROR:` o `;WARNING:` como primer elemento."
   [lista]
-  (= (symbol ";ERROR:") (first lista))
+  (or (= (symbol ";ERROR:") (first lista)) (= (symbol ";WARNING:") (first lista)))
 )
 
 ; user=> (proteger-bool-en-str "(or #F #f #t #T)")
