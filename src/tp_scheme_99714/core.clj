@@ -705,6 +705,7 @@
   (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
     (cond
       (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '< arg1)
+      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '< (first invalid-args))
       :else (boolean-parse (apply < lista)))))
 
 ; user=> (fnc-mayor ())
