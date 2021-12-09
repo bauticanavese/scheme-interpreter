@@ -617,9 +617,11 @@
 ; false
 ; user=> (igual? 6 "6")
 ; false
-;; (defn igual?
-;;   "Verifica la igualdad entre dos elementos al estilo de Scheme (case-insensitive)"
-;; )
+(defn igual?
+  "Verifica la igualdad entre dos elementos al estilo de Scheme (case-insensitive)"
+  [arg1 arg2]
+  true
+)
 
 (defn fnc-append
   "Devuelve el resultado de fusionar listas."

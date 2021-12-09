@@ -121,3 +121,8 @@
   (let [error-esperado (list (symbol ";ERROR:") 'unbound (symbol "variable:") 'f)]
     (is (= error-esperado (buscar 'f '(a 1 b 2 c 3 d 4 e 5)))))
 )
+
+(deftest igual?-test
+  (testing "'if' es igual a 'IF debe ser verdadero")
+  (is (= true (igual? 'if' 'IF)))
+)
