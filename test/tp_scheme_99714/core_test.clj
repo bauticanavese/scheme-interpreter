@@ -278,3 +278,7 @@
     (testing "es mayor o igual (3 2 A 1) debe devolver (;ERROR: >=: Wrong type in arg2 A)")
     (is (= error-arg2 (fnc-mayor-o-igual '(3 2 A 1))))))
 
+(deftest evaluar-escalar-test
+  (testing "evaluar escalar 32 '(x 6 y 11 z 'hola') devuelve (32 (x 6 y 11 z 'hola'))")
+  (let [escalar 32, amb '(x 6 y 11 z "hola")]
+    (is (= (list escalar amb) (evaluar-escalar escalar amb)))))
