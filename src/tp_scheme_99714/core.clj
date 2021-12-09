@@ -679,31 +679,12 @@
   )
 )
 
-; user=> (fnc-menor ())
-; #t
-; user=> (fnc-menor '(1))
-; #t
-; user=> (fnc-menor '(1 2))
-; #t
-; user=> (fnc-menor '(1 2 3))
-; #t
-; user=> (fnc-menor '(1 2 3 4))
-; #t
-; user=> (fnc-menor '(1 2 2 4))
-; #f
-; user=> (fnc-menor '(1 2 1 4))
-; #f
-; user=> (fnc-menor '(A 1 2 4))
-; (;ERROR: <: Wrong type in arg1 A)
-; user=> (fnc-menor '(1 A 1 4))
-; (;ERROR: <: Wrong type in arg2 A)
-; user=> (fnc-menor '(1 2 A 4))
-; (;ERROR: <: Wrong type in arg2 A)
 (defn fnc-menor
   "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
   [lista]
   (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
     (cond
+      (empty? lista) (boolean-parse true)
       (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '< arg1)
       (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '< (first invalid-args))
       :else (boolean-parse (apply < lista)))))
@@ -728,9 +709,15 @@
 ; (;ERROR: >: Wrong type in arg2 A)
 ; user=> (fnc-mayor '(3 2 A 1))
 ; (;ERROR: >: Wrong type in arg2 A)
-;; (defn fnc-mayor
-;;   "Devuelve #t si los numeros de una lista estan en orden estrictamente decreciente; si no, #f."
-;; )
+(defn fnc-mayor
+  "Devuelve #t si los numeros de una lista estan en orden estrictamente decreciente; si no, #f."
+  [lista]
+  (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
+    (cond
+      (empty? lista) (boolean-parse true)
+      (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 '< arg1)
+      (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 '< (first invalid-args))
+      :else (boolean-parse (apply > lista)))))
 
 ; user=> (fnc-mayor-o-igual ())
 ; #t

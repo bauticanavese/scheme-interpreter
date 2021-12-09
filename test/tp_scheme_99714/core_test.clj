@@ -182,10 +182,16 @@
     (is (= true-sym (fnc-equal? ())))))
 
 (deftest fnc-menor-test
-  (let [true-sym (symbol "#t"),
+  (let [true-sym (symbol "#t")
         false-sym (symbol "#f")
-        error-arg1 (list (symbol ";ERROR:") (symbol "<:") 'Wrong 'type 'in 'arg1 'A),
+        error-arg1 (list (symbol ";ERROR:") (symbol "<:") 'Wrong 'type 'in 'arg1 'A)
         error-arg2 (list (symbol ";ERROR:") (symbol "<:") 'Wrong 'type 'in 'arg2 'A)]
+    (testing "es menor () debe devolver #t")
+    (is (= true-sym (fnc-menor ())))
+
+    (testing "es menor (1) debe devolver #t")
+    (is (= true-sym (fnc-menor '(1))))
+
     (testing "es menor (1 2) debe devolver #t")
     (is (= true-sym (fnc-menor '(1 2))))
 
@@ -206,3 +212,31 @@
 
     (testing "es menor (1 2 A 4) debe devolver (;ERROR: <: Wrong type in arg2 A)")
     (is (= error-arg2 (fnc-menor '(1 2 A 4))))))
+
+(deftest fnc-mayor-test
+  (let [true-sym (symbol "#t")
+        false-sym (symbol "#f")
+        error-arg1 (list (symbol ";ERROR:") (symbol ">:") 'Wrong 'type 'in 'arg1 'A)
+        error-arg2 (list (symbol ";ERROR:") (symbol ">:") 'Wrong 'type 'in 'arg2 'A)]
+    (testing "es mayor () debe devolver #t")
+    (is (= true-sym (fnc-mayor ())))
+
+    (testing "es mayor (1) debe devolver #t")
+    (is (= true-sym (fnc-mayor '(1))))
+
+    (testing "es mayor (2 1) debe devolver #t")
+    (is (= true-sym (fnc-mayor '(2 1))))
+
+    (testing "es menor (3 2 1) debe devolver #t")
+    (is (= true-sym (fnc-mayor '(3 2 1))))
+
+    (testing "es menor (4 3 2 1) debe devolver #t")
+    (is (= true-sym (fnc-mayor '(4 3 2 1))))
+
+    (testing "es menor (4 2 2 1) debe devolver #f")
+    (is (= false-sym (fnc-mayor '(4 2 2 1))))
+
+    (testing "es menor (4 2 1 4) debe devolver #f")
+    (is (= false-sym (fnc-mayor '(4 2 1 4))))
+))
+
