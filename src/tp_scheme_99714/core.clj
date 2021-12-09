@@ -607,21 +607,15 @@
 ;;   "Cambia, en un codigo leido con read-string, %t por #t y %f por #f (y sus respectivas versiones en mayusculas)."
 ;; )
 
-; user=> (igual? 'if 'IF)
-; true
-; user=> (igual? 'if 'if)
-; true
-; user=> (igual? 'IF 'IF)
-; true
-; user=> (igual? 'IF "IF")
-; false
-; user=> (igual? 6 "6")
-; false
+(defn lower-case-arg
+  "Devuelve el lower-case en caso que arg sea un string, symbol. En otro caso devuelve arg."
+  [arg]
+  (if (or (symbol? arg) (string? arg)) (lower-case arg) arg))
+
 (defn igual?
   "Verifica la igualdad entre dos elementos al estilo de Scheme (case-insensitive)"
   [arg1 arg2]
-  (= (lower-case arg1) (lower-case arg2))
-)
+  (and (= (type arg1) (type arg2)) (= (lower-case-arg arg1) (lower-case-arg arg2))))
 
 (defn fnc-append
   "Devuelve el resultado de fusionar listas."

@@ -123,6 +123,20 @@
 )
 
 (deftest igual?-test
-  (testing "'if' es igual a 'IF debe ser verdadero")
+  (testing "es igual 'if a 'IF debe ser verdadero")
   (is (= true (igual? 'if 'IF)))
-)
+
+  (testing "es igual 'if a 'IF debe ser verdadero")
+  (is (= true (igual? 'if 'if)))
+
+  (testing "es igual 'IF a 'IF debe ser verdadero")
+  (is (= true (igual? 'IF 'IF)))
+
+  (testing "es igual 6 a 6 debe ser verdadero")
+  (is (= true (igual? 6 6)))
+
+  (testing "es igual 'IF a 'IF' debe ser falso")
+  (is (= false (igual? 'IF "IF")))
+
+  (testing "es igual 'if a 'IF debe ser falso")
+  (is (= false (igual? 6 "6"))))
