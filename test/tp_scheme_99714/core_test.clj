@@ -180,3 +180,17 @@
 
     (testing "equal () debe devolver #t")
     (is (= true-sym (fnc-equal? ())))))
+
+(deftest fnc-menor-test
+  (let [true-sym (symbol "#t"), false-sym (symbol "#f")]
+    (testing "es menor (1 2) debe devolver #t")
+    (is (= true-sym (fnc-menor '(1 2))))
+
+    (testing "es menor (1 2 3) debe devolver #t")
+    (is (= true-sym (fnc-menor '(1 2 3))))
+
+    (testing "es menor (1 2 3 4) debe devolver #t")
+    (is (= true-sym (fnc-menor '(1 2 3 4))))
+
+    (testing "es menor (1 2 2 4) debe devolver #f")
+    (is (= false-sym (fnc-menor '(1 2 2 4))))))

@@ -699,9 +699,10 @@
 ; (;ERROR: <: Wrong type in arg2 A)
 ; user=> (fnc-menor '(1 2 A 4))
 ; (;ERROR: <: Wrong type in arg2 A)
-;; (defn fnc-menor
-;;   "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
-;; )
+(defn fnc-menor
+  "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
+  [lista]
+  (boolean-parse (apply < lista)))
 
 ; user=> (fnc-mayor ())
 ; #t
