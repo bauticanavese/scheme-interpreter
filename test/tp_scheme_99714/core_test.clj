@@ -156,22 +156,27 @@
   (is (= (symbol "#f") (boolean-parse false))))
 
 (deftest fnc-equal?-test
-  ;;  user=> (fnc-equal? ())
-; #t
-; user=> (fnc-equal? '(A))
-; #t
-; user=> (fnc-equal? '(A a))
-; #t
-; user=> (fnc-equal? '(A a A))
-; #t
-; user=> (fnc-equal? '(A a A a))
-; #t
-; user=> (fnc-equal? '(A a A B))
-; #f
-; user=> (fnc-equal? '(1 1 1 1))
-; #t
-; user=> (fnc-equal? '(1 1 2 1))
-; #f
   (let [true-sym (symbol "#t"), false-sym (symbol "#f")]
     (testing "equal (A a) debe devolver #t")
-    (is (= true-sym (fnc-equal? '(A a a a a))))))
+    (is (= true-sym (fnc-equal? '(A a))))
+
+    (testing "equal (A a A) debe devolver #t")
+    (is (= true-sym (fnc-equal? '(A a A))))
+
+    (testing "equal (A a A a) debe devolver #t")
+    (is (= true-sym (fnc-equal? '(A a A a))))
+
+    (testing "equal (A a a A B) debe devolver #f")
+    (is (= false-sym (fnc-equal? '(A a a A B))))
+
+    (testing "equal (1 1 1 1 1) debe devolver #t")
+    (is (= true-sym (fnc-equal? '(1 1 1 1 1))))
+
+    (testing "equal (1 1 2 1) debe devolver #f")
+    (is (= false-sym (fnc-equal? '(1 1 2 1))))
+
+    (testing "equal (A) debe devolver #t")
+    (is (= true-sym (fnc-equal? '(A))))
+
+    (testing "equal () debe devolver #t")
+    (is (= true-sym (fnc-equal? ())))))
