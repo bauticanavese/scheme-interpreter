@@ -378,14 +378,17 @@
 
   (testing "evaluar set '(set! x) '(x 0) debe devolver ((;ERROR: set!: missing or extra expression (set! x)) (x 0))")
   (let [expected-result (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression (list 'set! 'x)) '(x 0))]
-       (is (= expected-result (evaluar-set! '(set! x) '(x 0)))))
+    (is (= expected-result (evaluar-set! '(set! x) '(x 0)))))
 
   (testing "evaluar set '(set! x 1 2) '(x 0) debe devolver ((;ERROR: set!: missing or extra expression (set! x 1 2)) (x 0))")
   (let [expected-result (list (list (symbol ";ERROR:") (symbol "set!:") 'missing 'or 'extra 'expression (list 'set! 'x '1 '2)) '(x 0))]
-       (is (= expected-result (evaluar-set! '(set! x 1 2) '(x 0)))))
-  
- (testing "evaluar set '(set! 1 2) '(x 0) debe devolver ((;ERROR: set!: bad variable 1) (x 0))")
-(let [expected-result (list (list (symbol ";ERROR:") (symbol "set!:") 'bad 'variable '1) '(x 0))]
-  (is (= expected-result (evaluar-set! '(set! 1 2) '(x 0))))))
+    (is (= expected-result (evaluar-set! '(set! x 1 2) '(x 0)))))
+
+  (testing "evaluar set '(set! 1 2) '(x 0) debe devolver ((;ERROR: set!: bad variable 1) (x 0))")
+  (let [expected-result (list (list (symbol ";ERROR:") (symbol "set!:") 'bad 'variable '1) '(x 0))]
+    (is (= expected-result (evaluar-set! '(set! 1 2) '(x 0)))))
+
+  (testing "evaluar set '(set! x (+ 2 x)) '(+ + x 0) debe actualizar el ambiente (+ + x 2)")
+  (is (= (list (symbol "#<unspecified>") '(+ + x 2)) (evaluar-set! '(set! x (+ 2 x)) '(+ + x 0)))))
 
   

@@ -128,7 +128,6 @@
     (list expre amb)                                      ; de lo contrario, evaluarla
     (cond
       (not (seq? expre))             (evaluar-escalar expre amb)
-
       (igual? (first expre) 'define) (evaluar-define expre amb)
 
          ;
@@ -193,8 +192,8 @@
   "Aplica una funcion primitiva a una `lae` (lista de argumentos evaluados)."
   [fnc lae amb]
   (cond
-    (= fnc '<)            (fnc-menor lae)
-
+    (= fnc '<) (fnc-menor lae)
+    (= fnc '+) (fnc-sumar lae)
     ;
     ;
     ; Si la funcion primitiva esta identificada por un simbolo, puede determinarse mas rapido que hacer con ella
@@ -746,7 +745,6 @@
 ;;   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
 ;; )
 
-
 (defn evaluar-set!
   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
   [exp amb]
@@ -755,7 +753,7 @@
       (not= 3 (count exp)) (list (generar-mensaje-error :missing-or-extra 'set! exp) amb)
       (not (symbol? clave))  (list (generar-mensaje-error :bad-variable 'set! clave) amb)
       (error? (buscar (second exp) amb)) (list (generar-mensaje-error :unbound-variable clave) amb)
-      :else (list (symbol "#<unspecified>") (actualizar-amb amb clave valor)))))
+      :else (list (symbol "#<unspecified>") (actualizar-amb amb clave (first (evaluar valor amb)))))))
 
 ; Al terminar de cargar el archivo en el REPL de Clojure, se debe devolver true.
 
