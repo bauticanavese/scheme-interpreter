@@ -569,9 +569,8 @@
   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
   [amb clave valor]
-  (cond
-    (error? valor) amb
-    :else (apply concat (assoc (apply array-map amb) clave valor))))
+  (if (error? valor) amb 
+      (apply concat (assoc (apply array-map amb) clave valor))))
 
 (defn buscar
   "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
@@ -712,9 +711,11 @@
 ; ((;ERROR: define: bad variable (define () 2)) (x 1))
 ; user=> (evaluar-define '(define 2 x) '(x 1))
 ; ((;ERROR: define: bad variable (define 2 x)) (x 1))
-;; (defn evaluar-define
-;;   "Evalua una expresion `define`. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
-;; )
+(defn evaluar-define
+  "Evalua una expresion `define`. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
+  [exp amb]
+  (let [f-args (rest (second exp)), f-cuerpo (nth exp 2)]
+    (list (symbol "#<unspecified>") (concat amb (list 'f (list 'lambda f-args f-cuerpo))))))
 
 ; user=> (evaluar-if '(if 1 2) '(n 7))
 ; (2 (n 7))
