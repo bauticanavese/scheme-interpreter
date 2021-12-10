@@ -746,8 +746,6 @@
 ;;   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
 ;; )
 
-; user=> (evaluar-set! '(set! x 1) '())
-; ((;ERROR: unbound variable: x) ())
 ; user=> (evaluar-set! '(set! x) '(x 0))
 ; ((;ERROR: set!: missing or extra expression (set! x)) (x 0))
 ; user=> (evaluar-set! '(set! x 1 2) '(x 0))
@@ -757,12 +755,12 @@
 (defn evaluar-set!
   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
   [exp amb]
-  (cond
-    (error? (buscar (second exp) amb)) (list (generar-mensaje-error :unbound-variable (second exp)) amb)
-    :else (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (last exp)))
-    )
-  
-  )
+  (let [clave (second exp), valor (last exp)]
+    (cond
+      (error? (buscar (second exp) amb))
+      (list (generar-mensaje-error :unbound-variable clave) amb)
+      :else (list (symbol "#<unspecified>") (actualizar-amb amb clave valor))))
+)
 
 
 ; Al terminar de cargar el archivo en el REPL de Clojure, se debe devolver true.
