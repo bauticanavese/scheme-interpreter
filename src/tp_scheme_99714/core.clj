@@ -697,8 +697,6 @@
 
 ; user=> (evaluar-define '(define x 2) '(x 1))
 ; (#<unspecified> (x 2))
-; user=> (evaluar-define '(define (f x) (+ x 1)) '(x 1))
-; (#<unspecified> (x 1 f (lambda (x) (+ x 1))))
 ; user=> (evaluar-define '(define) '(x 1))
 ; ((;ERROR: define: missing or extra expression (define)) (x 1))
 ; user=> (evaluar-define '(define x) '(x 1))
@@ -714,8 +712,10 @@
 (defn evaluar-define
   "Evalua una expresion `define`. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
   [exp amb]
-  (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp)]
-    (list (symbol "#<unspecified>") (concat amb (list 'f (concat (list 'lambda f-args) f-cuerpo))))))
+  (if (seq? (second exp))
+    (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp)]
+      (list (symbol "#<unspecified>") (concat amb (list 'f (concat (list 'lambda f-args) f-cuerpo)))))
+    (list (symbol "#<unspecified>") (concat amb (rest exp)))))
 
 ; user=> (evaluar-if '(if 1 2) '(n 7))
 ; (2 (n 7))

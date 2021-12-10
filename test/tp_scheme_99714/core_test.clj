@@ -322,10 +322,17 @@
 (deftest evaluar-define-test
   (testing "define (f x) (+ x 1) con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda (x) (+ x 1))))")
   (let [expected-amb (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (+ x 1)))))]
-       (is (= expected-amb (evaluar-define '(define (f x) (+ x 1)) '(x 1)))))
-  
+    (is (= expected-amb (evaluar-define '(define (f x) (+ x 1)) '(x 1)))))
+
   (testing "define (f x) (display x) (+ x 1) con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda (x) (display x) (+ x 1))))")
-(let [expected-amb (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (display x) (+ x 1)))))]
-  (is (= expected-amb (evaluar-define '(define (f x) (display x) (+ x 1)) '(x 1)))))  
+  (let [expected-amb (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (display x) (+ x 1)))))]
+    (is (= expected-amb (evaluar-define '(define (f x) (display x) (+ x 1)) '(x 1)))))
+
+  (testing "define (w 2) con amiente (x 1) debe actualizar el ambiente (x 2 w 2)")
+  (let [expected-amb (cons (symbol "#<unspecified>") '((x 2 w 2)))]
+    (is (= expected-amb (evaluar-define '(define w 2) '(x 2)))))
+  
+  (testing "define (x 2) con amiente (x 1) debe actualizar el ambiente (x 2)")
 
   )
+
