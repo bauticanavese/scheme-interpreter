@@ -309,3 +309,12 @@
 
   (testing "proteger bool en str para '' debe devolver ''")
   (is (= "" (proteger-bool-en-str ""))))
+
+(deftest restaurar-bool-test
+  (testing "restaurar bool (and (or %F %f %t %T) %T) debe devolver (and (or #F #f #t #T) #T)")
+  (let [expected-exp (list 'and (list 'or (symbol "#F") (symbol "#f") (symbol "#t") (symbol "#T")) (symbol "#T"))]
+    (is (= expected-exp (restaurar-bool (read-string "(and (or %F %f %t %T) %T)")))))
+
+  (testing "restaurar bool (and (or %F (or %f %f)) %T) debe devolver (and (or #F (or #f #f)) #T)")
+  (let [expected-exp (list 'and (list 'or (symbol "#F") (list 'or (symbol "#f") (symbol "#f"))) (symbol "#T"))]
+    (is (= expected-exp (restaurar-bool (restaurar-bool (read-string "(and (or %F (or %f %f)) %T)")))))))

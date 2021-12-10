@@ -1,5 +1,6 @@
 (ns tp-scheme-99714.core
-  (:gen-class))
+  (:gen-class) 
+  (:require [clojure.walk :refer [prewalk-replace]]))
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -582,28 +583,19 @@
 (defn error?
   "Devuelve true o false, segun sea o no el arg. una lista con `;ERROR:` o `;WARNING:` como primer elemento."
   [arg]
-  (and (list? arg)
+  (and (seq? arg)
        (let [primer-elemento (first arg)]
          (or (= (symbol ";ERROR:") primer-elemento) (= (symbol ";WARNING:") primer-elemento)))))
 
-; user=> (proteger-bool-en-str "(or #F #f #t #T)")
-; "(or %F %f %t %T)"
-; user=> (proteger-bool-en-str "(and (or #F #f #t #T) #T)")
-; "(and (or %F %f %t %T) %T)"
-; user=> (proteger-bool-en-str "")
-; ""
 (defn proteger-bool-en-str
   "Cambia, en una cadena, #t por %t y #f por %f (y sus respectivas versiones en mayusculas), para poder aplicarle read-string."
   [arg]
   (clojure.string/replace arg #"#" "%"))
 
-; user=> (restaurar-bool (read-string (proteger-bool-en-str "(and (or #F #f #t #T) #T)")))
-; (and (or #F #f #t #T) #T)
-; user=> (restaurar-bool (read-string "(and (or %F %f %t %T) %T)") )
-; (and (or #F #f #t #T) #T)
-;; (defn restaurar-bool
-;;   "Cambia, en un codigo leido con read-string, %t por #t y %f por #f (y sus respectivas versiones en mayusculas)."
-;; )
+(defn restaurar-bool
+  "Cambia, en un codigo leido con read-string, %t por #t y %f por #f (y sus respectivas versiones en mayusculas)."
+  [arg]
+  (prewalk-replace {'%T (symbol "#T"), '%t (symbol "#t"), '%f (symbol "#f"), '%F (symbol "#F")} arg))
 
 (defn lower-case-arg
   "Devuelve el lower-case en caso que arg sea un string, symbol. En otro caso devuelve arg."
