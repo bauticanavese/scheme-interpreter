@@ -372,4 +372,7 @@
 (deftest evaluar-set!-test
   (testing "evaluar set '(set! x 1) '(x 0) debe actualizar el ambiente (x 1)")
   (is (= (list (symbol "#<unspecified>") '(x 1)) (evaluar-set! '(set! x 1) '(x 0))))
+
+  (testing "evaluar set '(set! x 1) '() debe devolver ((;ERROR: unbound variable: x) ())")
+  (is (= (list (list (symbol ";ERROR:") 'unbound (symbol "variable:") 'x) '()) (evaluar-set! '(set! x 1) '())))
   )

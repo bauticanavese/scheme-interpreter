@@ -746,8 +746,6 @@
 ;;   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
 ;; )
 
-; user=> (evaluar-set! '(set! x 1) '(x 0))
-; (#<unspecified> (x 1))
 ; user=> (evaluar-set! '(set! x 1) '())
 ; ((;ERROR: unbound variable: x) ())
 ; user=> (evaluar-set! '(set! x) '(x 0))
@@ -759,7 +757,10 @@
 (defn evaluar-set!
   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
   [exp amb]
-  (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (last exp)))
+  (cond
+    (error? (buscar (second exp) amb)) (list (generar-mensaje-error :unbound-variable (second exp)) amb)
+    :else (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (last exp)))
+    )
   
   )
 
