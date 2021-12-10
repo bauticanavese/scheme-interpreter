@@ -332,7 +332,8 @@
   (let [expected-amb (cons (symbol "#<unspecified>") '((x 2 w 2)))]
     (is (= expected-amb (evaluar-define '(define w 2) '(x 2)))))
   
-  (testing "define (x 2) con amiente (x 1) debe actualizar el ambiente (x 2)")
-
+  (testing "define (x 2) con ambiente (x 1) debe actualizar el ambiente (x 2)")
+    (let [expected-amb (cons (symbol "#<unspecified>") '((x 2)))]
+      (is (= expected-amb (evaluar-define '(define x 2) '(x 1)))))
   )
 
