@@ -569,9 +569,11 @@
   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
   [amb clave valor]
-  (if (not (symbol? clave)) (throw (AssertionError. "Worng key type.")) ())
-  (if (error? valor) amb
-      (apply concat (assoc (apply array-map amb) clave valor))))
+  (cond
+    (not (symbol? clave)) (throw (AssertionError. "Worng key type."))
+    (error? valor) amb
+    :else (apply concat (assoc (apply array-map amb) clave valor))))
+
 
 (defn buscar
   "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
@@ -754,9 +756,12 @@
 ; ((;ERROR: set!: missing or extra expression (set! x 1 2)) (x 0))
 ; user=> (evaluar-set! '(set! 1 2) '(x 0))
 ; ((;ERROR: set!: bad variable 1) (x 0))
-;; (defn evaluar-set!
-;;   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
-;; )
+(defn evaluar-set!
+  "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
+  [exp amb]
+  (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (last exp)))
+  
+  )
 
 
 ; Al terminar de cargar el archivo en el REPL de Clojure, se debe devolver true.

@@ -368,3 +368,8 @@
   (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'bad 'variable '(define 2 x)) '(x 1))]
     (is (= expected-result (evaluar-define '(define 2 x) '(x 1))))))
 
+
+(deftest evaluar-set!-test
+  (testing "evaluar set '(set! x 1) '(x 0) debe actualizar el ambiente (x 1)")
+  (is (= (list (symbol "#<unspecified>") '(x 1)) (evaluar-set! '(set! x 1) '(x 0))))
+  )
