@@ -696,10 +696,6 @@
   (if (symbol? escalar) (list (buscar escalar amb) amb) (list escalar amb)))
 
 
-; user=> (evaluar-define '(define x 2 3) '(x 1))
-; ((;ERROR: define: missing or extra expression (define x 2 3)) (x 1))
-; user=> (evaluar-define '(define ()) '(x 1))
-; ((;ERROR: define: missing or extra expression (define ())) (x 1))
 ; user=> (evaluar-define '(define () 2) '(x 1))
 ; ((;ERROR: define: bad variable (define () 2)) (x 1))
 ; user=> (evaluar-define '(define 2 x) '(x 1))
@@ -707,14 +703,14 @@
 (defn evaluar-define
   "Evalua una expresion `define`. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
   [exp amb]
-(cond
-  (< (count exp) 3) (list (generar-mensaje-error :missing-or-extra 'define exp) amb)
-  (seq? (second exp)) ; syntactic sugar for lambda.
-  (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp), f-nombre (first (second exp))]
-    (list (symbol "#<unspecified>") (actualizar-amb amb f-nombre (concat (list 'lambda f-args) f-cuerpo))))
-  :else (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (nth exp 2))))
-  
-  )        
+  (cond
+    (< (count exp) 3) (list (generar-mensaje-error :missing-or-extra 'define exp) amb)
+    (seq? (second exp)) ; syntactic sugar for lambda.
+    (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp), f-nombre (first (second exp))]
+      (list (symbol "#<unspecified>") (actualizar-amb amb f-nombre (concat (list 'lambda f-args) f-cuerpo))))
+    :else (cond
+            (not= (count exp) 3) (list (generar-mensaje-error :missing-or-extra 'define exp) amb)
+            :else (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (nth exp 2))))))        
 
 ; user=> (evaluar-if '(if 1 2) '(n 7))
 ; (2 (n 7))
