@@ -708,11 +708,13 @@
   "Evalua una expresion `define`. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
   [exp amb]
 (cond
-  (< (count exp) 3 ) (list (generar-mensaje-error :missing-or-extra 'define exp) amb) 
-  :else (if (seq? (second exp)) ; define a function.
-    (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp)]
-      (list (symbol "#<unspecified>") (concat amb (list 'f (concat (list 'lambda f-args) f-cuerpo)))))
-    (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (nth exp 2))))))
+  (< (count exp) 3) (list (generar-mensaje-error :missing-or-extra 'define exp) amb)
+  (seq? (second exp)) ; syntactic sugar for lambda.
+  (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp), f-nombre (first (second exp))]
+    (list (symbol "#<unspecified>") (actualizar-amb amb f-nombre (concat (list 'lambda f-args) f-cuerpo))))
+  :else (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (nth exp 2))))
+  
+  )        
 
 ; user=> (evaluar-if '(if 1 2) '(n 7))
 ; (2 (n 7))
