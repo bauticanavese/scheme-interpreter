@@ -331,9 +331,20 @@
   (testing "define (w 2) con amiente (x 1) debe actualizar el ambiente (x 2 w 2)")
   (let [expected-amb (cons (symbol "#<unspecified>") '((x 2 w 2)))]
     (is (= expected-amb (evaluar-define '(define w 2) '(x 2)))))
-  
+
   (testing "define (x 2) con ambiente (x 1) debe actualizar el ambiente (x 2)")
-    (let [expected-amb (cons (symbol "#<unspecified>") '((x 2)))]
-      (is (= expected-amb (evaluar-define '(define x 2) '(x 1)))))
+  (let [expected-amb (cons (symbol "#<unspecified>") '((x 2)))]
+    (is (= expected-amb (evaluar-define '(define x 2) '(x 1)))))
+
+  (testing "define () con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define)) (x 1))")
+  (let [expected-amb (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression (list 'define)) '(x 1))]
+    (is (= expected-amb (evaluar-define '(define) '(x 1)))))
+
+    (testing "define (x) con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define x)) (x 1))")
+(let [expected-amb (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression '(define x)) '(x 1))]
+  (is (= expected-amb (evaluar-define '(define x) '(x 1)))))
+
+  ; user=> (evaluar-define '(define x) '(x 1))
+; ((;ERROR: define: missing or extra expression (define x)) (x 1))
   )
 
