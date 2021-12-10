@@ -324,17 +324,17 @@
   (let [expected-result (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (+ x 1)))))]
     (is (= expected-result (evaluar-define '(define (f x) (+ x 1)) '(x 1)))))
 
-    (testing "define (sumar a b) (+ a b) con ambiente (x 1) devuelve (#<unspecified> (x 1 sumar (lambda (a b) (+ a b))))")
-(let [expected-result (cons (symbol "#<unspecified>") '((x 1 sumar (lambda (a b) (+ a b)))))]
-  (is (= expected-result (evaluar-define '(define (sumar a b) (+ a b)) '(x 1)))))
+  (testing "define (sumar a b) (+ a b) con ambiente (x 1) devuelve (#<unspecified> (x 1 sumar (lambda (a b) (+ a b))))")
+  (let [expected-result (cons (symbol "#<unspecified>") '((x 1 sumar (lambda (a b) (+ a b)))))]
+    (is (= expected-result (evaluar-define '(define (sumar a b) (+ a b)) '(x 1)))))
 
   (testing "define (f) 1 con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda () 1)))")
   (let [expected-result (cons (symbol "#<unspecified>") '((x 1 f (lambda () 1))))]
     (is (= expected-result (evaluar-define '(define (f) 1) '(x 1)))))
 
   (testing "define (f x) (display x) (+ x 1) con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda (x) (display x) (+ x 1))))")
-(let [expected-result (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (display x) (+ x 1)))))]
-  (is (= expected-result (evaluar-define '(define (f x) (display x) (+ x 1)) '(x 1)))))
+  (let [expected-result (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (display x) (+ x 1)))))]
+    (is (= expected-result (evaluar-define '(define (f x) (display x) (+ x 1)) '(x 1)))))
 
   (testing "define (w 2) con amiente (x 1) debe actualizar el ambiente (x 2 w 2)")
   (let [expected-result (cons (symbol "#<unspecified>") '((x 2 w 2)))]
@@ -348,22 +348,23 @@
   (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression (list 'define)) '(x 1))]
     (is (= expected-result (evaluar-define '(define) '(x 1)))))
 
-    (testing "define (x) con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define x)) (x 1))")
-(let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression '(define x)) '(x 1))]
-  (is (= expected-result (evaluar-define '(define x) '(x 1)))))
-  
-    (testing "define (x 2 3) con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define x 2 3)) (x 1))")
-(let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression '(define x 2 3)) '(x 1))]
-  (is (= expected-result (evaluar-define '(define x 2 3) '(x 1)))))
-  
-      (testing "define (()) con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define x 2 3)) (x 1))")
-(let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression '(define ())) '(x 1))]
-  (is (= expected-result (evaluar-define '(define ()) '(x 1)))))
-  
-  ; user=> (evaluar-define '(define () 2) '(x 1))
-; ((;ERROR: define: bad variable (define () 2)) (x 1))
+  (testing "define (x) con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define x)) (x 1))")
+  (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression '(define x)) '(x 1))]
+    (is (= expected-result (evaluar-define '(define x) '(x 1)))))
 
-; user=> (evaluar-define '(define ()) '(x 1))
-; ((;ERROR: define: missing or extra expression (define ())) (x 1))
-  )
+  (testing "define (x 2 3) con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define x 2 3)) (x 1))")
+  (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression '(define x 2 3)) '(x 1))]
+    (is (= expected-result (evaluar-define '(define x 2 3) '(x 1)))))
+
+  (testing "define (()) con ambiente (x 1) deve devolver ((;ERROR: define: missing or extra expression (define ())) (x 1))")
+  (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'missing 'or 'extra 'expression '(define ())) '(x 1))]
+    (is (= expected-result (evaluar-define '(define ()) '(x 1)))))
+
+  (testing "define (() 2) con ambiente (x 1) deve devolver ((;ERROR: define: bad  variable (define () 2)) (x 1))")
+  (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'bad 'variable '(define () 2)) '(x 1))]
+    (is (= expected-result (evaluar-define '(define () 2) '(x 1)))))
+
+  (testing "define (2 x) con ambiente (x 1) deve devolver ((;ERROR: define: bad  variable (define 2 x)) (x 1))")
+  (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'bad 'variable '(define 2 x)) '(x 1))]
+    (is (= expected-result (evaluar-define '(define 2 x) '(x 1))))))
 
