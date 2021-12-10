@@ -320,8 +320,12 @@
     (is (= expected-exp (restaurar-bool (restaurar-bool (read-string "(and (or %F (or %f %f)) %T)")))))))
 
 (deftest evaluar-define-test
-  ; user=> (evaluar-define '(define (f x) (+ x 1)) '(x 1))
-; (#<unspecified> (x 1 f (lambda (x) (+ x 1))))
   (testing "define (f x) (+ x 1) con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda (x) (+ x 1))))")
-  (let [expected-amb (list (symbol "#<unspecified>") (list 'x '1 'f (list 'lambda (list 'x) (list '+ 'x '1))))]
-       (is (= expected-amb (evaluar-define '(define (f x) (+ x 1)) '(x 1))))))
+  (let [expected-amb (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (+ x 1)))))]
+       (is (= expected-amb (evaluar-define '(define (f x) (+ x 1)) '(x 1)))))
+  
+  (testing "define (f x) (display x) (+ x 1) con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda (x) (display x) (+ x 1))))")
+(let [expected-amb (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (display x) (+ x 1)))))]
+  (is (= expected-amb (evaluar-define '(define (f x) (display x) (+ x 1)) '(x 1)))))  
+
+  )

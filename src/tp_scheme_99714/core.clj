@@ -714,8 +714,8 @@
 (defn evaluar-define
   "Evalua una expresion `define`. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
   [exp amb]
-  (let [f-args (rest (second exp)), f-cuerpo (nth exp 2)]
-    (list (symbol "#<unspecified>") (concat amb (list 'f (list 'lambda f-args f-cuerpo))))))
+  (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp)]
+    (list (symbol "#<unspecified>") (concat amb (list 'f (concat (list 'lambda f-args) f-cuerpo))))))
 
 ; user=> (evaluar-if '(if 1 2) '(n 7))
 ; (2 (n 7))
