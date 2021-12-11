@@ -146,7 +146,7 @@
 (deftest boolean-to-symbol-test
   (testing "true debe parsearse como #t")
   (is (= (symbol "#t") (boolean-to-symbol true)))
-  
+
   (testing "false debe parsearse como #f")
   (is (= (symbol "#f") (boolean-to-symbol false))))
 
@@ -425,7 +425,7 @@
 (deftest verificar-parentesis-test
   (testing "verificar parentesis de () debe devolver 0")
   (is (= 0 (verificar-parentesis "()")))
-  
+
   (testing "verificar parentesis de '(hola 'mundo' debe devolver -1")
   (is (= 1 (verificar-parentesis "(hola 'mundo")))
 
@@ -441,4 +441,13 @@
   (testing "verificar parentesis de (hola '(mundo) ) debe devolver 0")
   (is (= 0 (verificar-parentesis "(hola '(mundo) )"))))
 
-  
+(deftest leer-entrada-test
+  (testing "leer entrada de 123 debe devolver '123'")
+  (is (= "123" (with-in-str "123" (leer-entrada))))
+
+  (testing "leer entrada multilinea (hola mundo) debe devolver (hola mundo) ")
+  (let [input "(hola
+ mundo)"]
+    (is (= "(hola mundo)" (with-in-str input (leer-entrada))))))
+
+

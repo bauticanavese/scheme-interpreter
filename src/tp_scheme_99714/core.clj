@@ -545,21 +545,17 @@
 ; user=> (leer-entrada)
 ; 123
 ; "123"
-;; (defn leer-entrada
-;;   "Lee una cadena desde la terminal/consola. Si los parentesis no estan correctamente balanceados al presionar Enter/Intro,
-;;    se considera que la cadena ingresada es una subcadena y el ingreso continua. De lo contrario, se la devuelve completa."
-;; )
+(defn leer-entrada
+  "Lee una cadena desde la terminal/consola. Si contiene parentesis de menos al 
+ presionar Enter/Intro, se considera que la cadena ingresada es una subcadena 
+ y el ingreso continua. De lo contrario, se la devuelve completa."
+  []
+  (loop [input (read-line) exp ""]
+    (let [nueva-exp (str exp input)]
+      (if (and (not (empty? nueva-exp)) (= 0 (verificar-parentesis nueva-exp)))
+        nueva-exp
+        (recur (read-line) nueva-exp)))))
 
-; user=> (verificar-parentesis "(hola 'mundo")
-; 1
-; user=> (verificar-parentesis "(hola '(mundo)))")
-; -1
-; user=> (verificar-parentesis "(hola '(mundo) () 6) 7)")
-; -1
-; user=> (verificar-parentesis "(hola '(mundo) () 6) 7) 9)")
-; -1
-; user=> (verificar-parentesis "(hola '(mundo) )")
-; 0
 (defn verificar-parentesis
   "Cuenta los parentesis en una cadena, sumando 1 si `(`, restando 1 si `)`. Si el contador se hace negativo, para y retorna -1."
   [arg]
@@ -748,7 +744,6 @@
 ;; (defn evaluar-if
 ;;   "Evalua una expresion `if`. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
 ;; )
-
 
 (defn evaluar-or
   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
