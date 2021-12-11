@@ -711,21 +711,6 @@
     (catch AssertionError e
       (list (generar-mensaje-error :bad-variable 'define exp) amb))))
 
-
-; user=> (evaluar-if '(if 1 n) '(n 7))
-; (7 (n 7))
-; user=> (evaluar-if '(if 1 n 8) '(n 7))
-; (7 (n 7))
-; user=> (evaluar-if (list 'if (symbol "#f") 'n) (list 'n 7 (symbol "#f") (symbol "#f")))
-; (#<unspecified> (n 7 #f #f))
-; user=> (evaluar-if (list 'if (symbol "#f") 'n 8) (list 'n 7 (symbol "#f") (symbol "#f")))
-; (8 (n 7 #f #f))
-; user=> (evaluar-if (list 'if (symbol "#f") 'n '(set! n 9)) (list 'n 7 (symbol "#f") (symbol "#f")))
-; (#<unspecified> (n 9 #f #f))
-; user=> (evaluar-if '(if) '(n 7))
-; ((;ERROR: if: missing or extra expression (if)) (n 7))
-; user=> (evaluar-if '(if 1) '(n 7))
-; ((;ERROR: if: missing or extra expression (if 1)) (n 7))
 (defn evaluar-if
   "Evalua una expresion `if`. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
   [exp amb]
@@ -733,11 +718,11 @@
         cond-eval (evaluar (second exp) amb)
         cond-resultado (symbol-to-boolean (first cond-eval))
         cond-amb (second cond-eval)]
-    (if cond-resultado
-      (evaluar (nth exp 2) cond-amb)
-      (if (= 3 count-exp)
-        (list (symbol "#<unspecified>") cond-amb)
-        (evaluar (nth exp 3) cond-amb)))))
+    (cond
+      (or (< count-exp 3) (> count-exp 4)) (list (generar-mensaje-error :missing-or-extra 'if exp) amb)
+      cond-resultado (evaluar (nth exp 2) cond-amb)
+      (= 3 count-exp) (list (symbol "#<unspecified>") cond-amb)
+      :else (evaluar (nth exp 3) cond-amb))))
 
 (defn evaluar-or
   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."

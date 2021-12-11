@@ -469,27 +469,26 @@
     (is (= error (fnc-read '(1 2 3))))))
 
 (deftest evaluar-if-test
-
-
-; user=> (evaluar-if (list 'if (symbol "#f") 'n '(set! n 9)) (list 'n 7 (symbol "#f") (symbol "#f")))
-; (#<unspecified> (n 9 #f #f))
-; user=> (evaluar-if '(if) '(n 7))
-; ((;ERROR: if: missing or extra expression (if)) (n 7))
-; user=> (evaluar-if '(if 1) '(n 7))
-; ((;ERROR: if: missing or extra expression (if 1)) (n 7))
-
   (testing "evaluar if (1 2) amb (n 7) debe devolver (2 (n 7))")
   (is (= '(2 (n 7)) (evaluar-if '(if 1 2) '(n 7))))
 
   (testing "evaluar if (1 n 8) amb (n 7) debe devolver (2 (n 7))")
   (is (= '(7 (n 7)) (evaluar-if '(if 1 n 8) '(n 7))))
-  
+
   (testing "evaluar if (#f n 8) amb (n 7 #f #f) debe devolver (8 (n 7 #f #f))")
   (is (= (list 8 (list 'n 7 (symbol "#f") (symbol "#f"))) (evaluar-if (list 'if (symbol "#f") 'n 8) (list 'n 7 (symbol "#f") (symbol "#f")))))
-  
+
   (testing "evaluar if (#f n) amb (n 7 #f #f) debe devolver (#<unspecified> (n 7 #f #f))")
   (is (= (list (symbol "#<unspecified>") (list 'n '7 (symbol "#f") (symbol "#f"))) (evaluar-if (list 'if (symbol "#f") 'n) (list 'n '7 (symbol "#f") (symbol "#f")))))
-  
-  (testing "evaluar if (#f n) amb (n 9 #f #f) debe devolver (#<unspecified> (n 9 #f #f))")
+
+  (testing "evaluar if (#f n (set! n 9)) amb (n 9 #f #f) debe devolver (#<unspecified> (n 9 #f #f))")
   (is (= (list (symbol "#<unspecified>") (list 'n '9 (symbol "#f") (symbol "#f"))) (evaluar-if (list 'if (symbol "#f") 'n '(set! n 9)) (list 'n 7 (symbol "#f") (symbol "#f")))))
-  )
+
+  (testing "evaluar if () amb (n 7) debe devolver ((;ERROR: if: missing or extra expression (if)) (n 7))")
+  (let [error-esperado (list (list (symbol ";ERROR:") (symbol "if:") 'missing 'or 'extra 'expression '(if)) '(n 7))]
+    (is (= error-esperado (evaluar-if '(if) '(n 7)))))
+
+  (testing "evaluar if (1) amb (n 7) debe devolver ((;ERROR: if: missing or extra expression (if)) (n 7))")
+  (let [error-esperado (list (list (symbol ";ERROR:") (symbol "if:") 'missing 'or 'extra 'expression '(if 1)) '(n 7))]
+    (is (= error-esperado (evaluar-if '(if 1) '(n 7))))))
+  
