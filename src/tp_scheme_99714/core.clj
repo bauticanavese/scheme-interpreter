@@ -129,6 +129,7 @@
     (cond
       (not (seq? expre))             (evaluar-escalar expre amb)
       (igual? (first expre) 'define) (evaluar-define expre amb)
+      (igual? (first expre) 'set!) (evaluar-set! expre amb)
 
          ;
          ;
@@ -199,10 +200,8 @@
     ; Si la funcion primitiva esta identificada por un simbolo, puede determinarse mas rapido que hacer con ella
     ;
     ;
-
-
     (igual? fnc 'append)  (fnc-append lae)
-
+    
     ;
     ;
     ; Si la funcion primitiva esta identificada mediante una palabra reservada, debe ignorarse la distincion entre mayusculas y minusculas 
@@ -730,10 +729,15 @@
 (defn evaluar-if
   "Evalua una expresion `if`. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
   [exp amb]
-  (let [cond-eval (evaluar (second exp) amb)
+  (let [count-exp (count exp)
+        cond-eval (evaluar (second exp) amb)
         cond-resultado (symbol-to-boolean (first cond-eval))
         cond-amb (second cond-eval)]
-    (if cond-resultado (evaluar (nth exp 2) cond-amb) (evaluar (nth exp 3) cond-amb))))
+    (if cond-resultado
+      (evaluar (nth exp 2) cond-amb)
+      (if (= 3 count-exp)
+        (list (symbol "#<unspecified>") cond-amb)
+        (evaluar (nth exp 3) cond-amb)))))
 
 (defn evaluar-or
   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
