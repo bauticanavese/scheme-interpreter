@@ -616,16 +616,25 @@
       (seq invalid-args) (generar-mensaje-error :wrong-type-arg 'append (first invalid-args))
       :else (apply concat lista))))
 
-(defn boolean-parse
-  "Traduce los booleanos a simbolos. true -> #t, false -> #f"
+(defn boolean-to-symbol
+  "Traduce los booleanos a simbolos. true -> #t, false -> #f
+  Devuelve el arg si no es booleano."
   [arg]
-  ({true (symbol "#t"), false (symbol "#f")} arg))
+  (let [map-result ({true (symbol "#t"), false (symbol "#f")} arg)]
+    (if (nil? map-result) arg map-result)))
+
+(defn symbol-to-boolean
+  "Traduce los simbolos a booleanos. #t -> true, #f -> false.
+   Devuelve el arg si no es booleano."
+  [arg]
+  (let [map-result ({(symbol "#t") true , (symbol "#f") false} arg)]
+    (if (nil? map-result) arg map-result)))
 
 (defn fnc-equal?
   "Compara elementos. Si son iguales, devuelve #t. Si no, #f."
   [lista]
   (let [primer-elemento (first lista)]
-    (boolean-parse
+    (boolean-to-symbol
      (apply = true (map (fn [x] (igual? x primer-elemento)) (rest lista))))))
 
 ; user=> (fnc-read ())
@@ -671,10 +680,10 @@
   [lista f]
   (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
     (cond
-      (empty? lista) (boolean-parse true)
+      (empty? lista) (boolean-to-symbol true)
       (not (number? arg1)) (generar-mensaje-error :wrong-type-arg1 f arg1)
       (seq invalid-args) (generar-mensaje-error :wrong-type-arg2 f (first invalid-args))
-      :else (boolean-parse (apply (resolve f) lista)))))
+      :else (boolean-to-symbol (apply (resolve f) lista)))))
 
 (defn fnc-menor
   "Devuelve #t si los numeros de una lista estan en orden estrictamente creciente; si no, #f."
@@ -695,6 +704,11 @@
   "Evalua una expresion escalar. Devuelve una lista con el resultado y un ambiente."
   [escalar amb]
   (if (symbol? escalar) (list (buscar escalar amb) amb) (list escalar amb)))
+
+(defn resultado-evaluar
+  "Devuelve el resultado de evaluar exp amb."
+  [amb exp]
+  (first (evaluar exp amb)))
 
 (defn evaluar-define
   "Evalua una expresion `define`. Devuelve una lista con el resultado y un ambiente actualizado con la definicion."
@@ -730,20 +744,13 @@
 ;;   "Evalua una expresion `if`. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
 ;; )
 
-; user=> (evaluar-or (list 'or) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
-; (#f (#f #f #t #t))
-; user=> (evaluar-or (list 'or (symbol "#t")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
-; (#t (#f #f #t #t))
-; user=> (evaluar-or (list 'or 7) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
-; (7 (#f #f #t #t))
-; user=> (evaluar-or (list 'or (symbol "#f") 5) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
-; (5 (#f #f #t #t))
-; user=> (evaluar-or (list 'or (symbol "#f")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
-; (#f (#f #f #t #t))
+
 (defn evaluar-or
   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
   [exp amb]
-  (list (boolean-parse false) amb))
+  (let [args (map symbol-to-boolean (map (partial resultado-evaluar amb) (rest exp)))]
+    (list (boolean-to-symbol (reduce #(or %1 %2) false args)) amb))
+)
 
 (defn evaluar-set!
   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
@@ -753,7 +760,7 @@
       (not= 3 (count exp)) (list (generar-mensaje-error :missing-or-extra 'set! exp) amb)
       (not (symbol? clave))  (list (generar-mensaje-error :bad-variable 'set! clave) amb)
       (error? (buscar (second exp) amb)) (list (generar-mensaje-error :unbound-variable clave) amb)
-      :else (list (symbol "#<unspecified>") (actualizar-amb amb clave (first (evaluar valor amb)))))))
+      :else (list (symbol "#<unspecified>") (actualizar-amb amb clave (resultado-evaluar amb valor))))))
 
 ; Al terminar de cargar el archivo en el REPL de Clojure, se debe devolver true.
 

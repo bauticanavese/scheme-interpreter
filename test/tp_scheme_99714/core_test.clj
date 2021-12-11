@@ -143,12 +143,19 @@
   (testing "lower case de 6 debe devolver 6")
   (is (= 6 (lower-case-arg 6))))
 
-(deftest boolean-parse-test
+(deftest boolean-to-symbol-test
   (testing "true debe parsearse como #t")
-  (is (= (symbol "#t") (boolean-parse true)))
+  (is (= (symbol "#t") (boolean-to-symbol true)))
   
   (testing "false debe parsearse como #f")
-  (is (= (symbol "#f") (boolean-parse false))))
+  (is (= (symbol "#f") (boolean-to-symbol false))))
+
+(deftest symbol-to-boolean-test
+  (testing "#t debe dar true")
+  (is (= true (symbol-to-boolean (symbol "#t"))))
+
+  (testing "#f debe dar false")
+  (is (= false (symbol-to-boolean (symbol "#f")))))
 
 (deftest fnc-equal?-test
   (let [true-sym (symbol "#t"), false-sym (symbol "#f")]
@@ -394,7 +401,25 @@
 (deftest evaluar-or-test
   (let [false-sym (symbol "#f"), true-sym (symbol "#t"), amb (list false-sym false-sym true-sym true-sym)]
     (testing "evaluar or () debe devolver #f")
-    (is (= (list false-sym amb) (evaluar-or '(or) amb))))
-  )
+    (is (= (list false-sym amb) (evaluar-or '(or) amb)))
+
+    (testing "evaluar or (#t) debe devolver #t")
+    (is (= (list true-sym amb) (evaluar-or (list 'or true-sym) amb)))
+
+    (testing "evaluar or (#f) debe devolver #f")
+    (is (= (list false-sym amb) (evaluar-or (list 'or false-sym) amb)))
+
+    (testing "evaluar or (7) debe devolver 7")
+    (is (= (list 7 amb) (evaluar-or (list 'or 7) amb)))
+
+    (testing "evaluar or (#t 7) debe devolver #t")
+    (is (= (list true-sym amb) (evaluar-or (list 'or true-sym 7) amb)))
+
+    (testing "evaluar or (#f 7) debe devolver 7")
+    (is (= (list 7 amb) (evaluar-or (list 'or false-sym 7) amb)))
+
+    (testing "evaluar or (#f (< 0 10)) debe devolver #t")
+    (let [amb (list '< '< false-sym false-sym true-sym true-sym)]
+      (is (= (list true-sym amb) (evaluar-or (list 'or false-sym '(< 0 10)) amb))))))
 
   
