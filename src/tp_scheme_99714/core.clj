@@ -667,8 +667,7 @@
 (defn evaluar-lista-numerica
   "Aplica la funcion f tomando los elementos de la lista como argumentos.
    Devuelve #t en el caso que la lista este vacía.
-   Valida los valores de la lista sean numéricos, devuelve 
-   (;ERROR: 'f': Wrong type in arg1 'arg') en el caso de que no."
+   Valida los valores de la lista sean numéricos."
   [lista f]
   (let [arg1 (first lista), invalid-args (filter (fn [n] (not (number? n))) lista)]
     (cond
@@ -741,9 +740,10 @@
 ; (5 (#f #f #t #t))
 ; user=> (evaluar-or (list 'or (symbol "#f")) (list (symbol "#f") (symbol "#f") (symbol "#t") (symbol "#t")))
 ; (#f (#f #f #t #t))
-;; (defn evaluar-or
-;;   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
-;; )
+(defn evaluar-or
+  "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
+  [exp amb]
+  (list (boolean-parse false) amb))
 
 (defn evaluar-set!
   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."

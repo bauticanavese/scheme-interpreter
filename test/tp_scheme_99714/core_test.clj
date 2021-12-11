@@ -391,4 +391,10 @@
   (testing "evaluar set '(set! x (+ 2 x)) '(+ + x 0) debe actualizar el ambiente (+ + x 2)")
   (is (= (list (symbol "#<unspecified>") '(+ + x 2)) (evaluar-set! '(set! x (+ 2 x)) '(+ + x 0)))))
 
+(deftest evaluar-or-test
+  (let [false-sym (symbol "#f"), true-sym (symbol "#t"), amb (list false-sym false-sym true-sym true-sym)]
+    (testing "evaluar or () debe devolver #f")
+    (is (= (list false-sym amb) (evaluar-or '(or) amb))))
+  )
+
   
