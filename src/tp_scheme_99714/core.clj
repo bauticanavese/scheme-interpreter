@@ -632,12 +632,13 @@
 
 (defn fnc-read
   "Devuelve la lectura de un elemento de Scheme desde la terminal/consola."
-  [puerto]
-  (cond
-    (= 1 (count puerto)) (generar-mensaje-error :io-ports-not-implemented 'read)
-    (> (count puerto) 1) (generar-mensaje-error :wrong-number-args-prim-proc 'read)
-    :else (restaurar-bool (read-string (proteger-bool-en-str (leer-entrada))))))
-
+  ([]
+   (restaurar-bool (read-string (proteger-bool-en-str (leer-entrada)))))
+  ([puerto]
+   (cond
+     (= 1 (count puerto)) (generar-mensaje-error :io-ports-not-implemented 'read)
+     (> (count puerto) 1) (generar-mensaje-error :wrong-number-args-prim-proc 'read)
+     :else (restaurar-bool (read-string (proteger-bool-en-str (leer-entrada)))))))
 
 (defn fnc-sumar
   "Suma los elementos de una lista."
@@ -711,8 +712,7 @@
     (catch AssertionError e
       (list (generar-mensaje-error :bad-variable 'define exp) amb))))
 
-; user=> (evaluar-if '(if 1 2) '(n 7))
-; (2 (n 7))
+
 ; user=> (evaluar-if '(if 1 n) '(n 7))
 ; (7 (n 7))
 ; user=> (evaluar-if '(if 1 n 8) '(n 7))
@@ -727,15 +727,24 @@
 ; ((;ERROR: if: missing or extra expression (if)) (n 7))
 ; user=> (evaluar-if '(if 1) '(n 7))
 ; ((;ERROR: if: missing or extra expression (if 1)) (n 7))
-;; (defn evaluar-if
-;;   "Evalua una expresion `if`. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
-;; )
+(defn evaluar-if
+  "Evalua una expresion `if`. Devuelve una lista con el resultado y un ambiente eventualmente modificado."
+  [exp amb]
+  (let [cond-eval (evaluar (second exp) amb)
+        cond-resultado (symbol-to-boolean (first cond-eval))
+        cond-amb (second cond-eval)]
+    (if cond-resultado (evaluar (nth exp 2) cond-amb) (evaluar (nth exp 3) cond-amb))))
 
 (defn evaluar-or
   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
   [exp amb]
-  (let [args (map symbol-to-boolean (map (partial resultado-evaluar amb) (rest exp)))]
-    (list (boolean-to-symbol (reduce #(or %1 %2) false args)) amb)))
+  (let [args (rest exp), fixed-args (if (even? (count args)) args (conj args false) ) ]
+    (map boolean-to-symbol
+         (reduce (fn [[result amb] [arg1 arg2]]
+                   (let [arg1-eval (evaluar arg1 amb) result-arg1 (symbol-to-boolean (first arg1-eval))
+                         arg2-eval (evaluar arg2 (second arg1-eval)) result-arg2 (symbol-to-boolean (first arg2-eval))]
+                     (list (or result result-arg1 result-arg2) (second arg2-eval))))
+                 (list false amb) (partition 2 1 fixed-args)))))
 
 (defn evaluar-set!
   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."

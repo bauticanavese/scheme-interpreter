@@ -468,3 +468,23 @@
   (let [error (list (symbol ";ERROR:") 'Wrong 'number 'of 'args 'given (symbol "#<primitive-procedure") (symbol "read>"))]
     (is (= error (fnc-read '(1 2 3))))))
 
+(deftest evaluar-if-test 
+
+; user=> (evaluar-if '(if 1 n) '(n 7))
+; (7 (n 7))
+; user=> (evaluar-if '(if 1 n 8) '(n 7))
+; (7 (n 7))
+; user=> (evaluar-if (list 'if (symbol "#f") 'n) (list 'n 7 (symbol "#f") (symbol "#f")))
+; (#<unspecified> (n 7 #f #f))
+; user=> (evaluar-if (list 'if (symbol "#f") 'n 8) (list 'n 7 (symbol "#f") (symbol "#f")))
+; (8 (n 7 #f #f))
+; user=> (evaluar-if (list 'if (symbol "#f") 'n '(set! n 9)) (list 'n 7 (symbol "#f") (symbol "#f")))
+; (#<unspecified> (n 9 #f #f))
+; user=> (evaluar-if '(if) '(n 7))
+  
+  (testing "evaluar if (1 2) amb (n 7) debe devolver (2 (n 7))")
+  (is (= '(2 (n 7)) (evaluar-if '(if 1 2) '(n 7))))
+  
+    (testing "evaluar if (1 n 8) amb (n 7) debe devolver (2 (n 7))")
+(is (= '(7 (n 7)) (evaluar-if '(if 1 n 8) '(n 7))))
+  )
