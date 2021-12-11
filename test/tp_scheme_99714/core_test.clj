@@ -422,4 +422,23 @@
     (let [amb (list '< '< false-sym false-sym true-sym true-sym)]
       (is (= (list true-sym amb) (evaluar-or (list 'or false-sym '(< 0 10)) amb))))))
 
+(deftest verificar-parentesis-test
+  (testing "verificar parentesis de () debe devolver 0")
+  (is (= 0 (verificar-parentesis "()")))
+  
+  (testing "verificar parentesis de '(hola 'mundo' debe devolver -1")
+  (is (= 1 (verificar-parentesis "(hola 'mundo")))
+
+  (testing "verificar parentesis de ()) debe devolver -1")
+  (is (= -1 (verificar-parentesis "())")))
+
+  (testing "verificar parentesis de (hola '(mundo) () 6) 7) debe devolver 0")
+  (is (= -1 (verificar-parentesis "(hola '(mundo) () 6) 7)")))
+
+  (testing "verificar parentesis de (hola '(mundo) () 6) 7) 9) debe devolver -1")
+  (is (= -1 (verificar-parentesis "(hola '(mundo) () 6) 7) 9)")))
+
+  (testing "verificar parentesis de (hola '(mundo) ) debe devolver 0")
+  (is (= 0 (verificar-parentesis "(hola '(mundo) )"))))
+
   

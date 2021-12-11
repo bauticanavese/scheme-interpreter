@@ -560,9 +560,14 @@
 ; -1
 ; user=> (verificar-parentesis "(hola '(mundo) )")
 ; 0
-;; (defn verificar-parentesis
-;;   "Cuenta los parentesis en una cadena, sumando 1 si `(`, restando 1 si `)`. Si el contador se hace negativo, para y retorna -1."
-;; )
+(defn verificar-parentesis
+  "Cuenta los parentesis en una cadena, sumando 1 si `(`, restando 1 si `)`. Si el contador se hace negativo, para y retorna -1."
+  [arg]
+  (reduce
+   (fn [a b]
+     (let [b-eval (or ({\( 1, \) -1} b) 0), total (+ a b-eval)]
+       (if (< total 0) (reduced -1) total)))
+   0 arg))
 
 (defn actualizar-amb
   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
@@ -749,8 +754,7 @@
   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
   [exp amb]
   (let [args (map symbol-to-boolean (map (partial resultado-evaluar amb) (rest exp)))]
-    (list (boolean-to-symbol (reduce #(or %1 %2) false args)) amb))
-)
+    (list (boolean-to-symbol (reduce #(or %1 %2) false args)) amb)))
 
 (defn evaluar-set!
   "Evalua una expresion `set!`. Devuelve una lista con el resultado y un ambiente actualizado con la redefinicion."
