@@ -450,4 +450,21 @@
  mundo)"]
     (is (= "(hola mundo)" (with-in-str input (leer-entrada))))))
 
+(deftest fnc-read-test
+  (testing "raed () con (hola mundo) multilinea debe devolver (hola mundo)")
+  (let [input "(hola
+ mundo)"]
+    (is (= '(hola mundo) (with-in-str input (fnc-read ())))))
+  
+
+
+
+
+
+
+
+
+
+
+  )
 

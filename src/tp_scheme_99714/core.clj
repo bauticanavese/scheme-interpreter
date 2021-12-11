@@ -537,14 +537,6 @@
 
 ; FUNCIONES QUE DEBEN SER IMPLEMENTADAS PARA COMPLETAR EL INTERPRETE DE SCHEME (ADEMAS DE COMPLETAR `EVALUAR` Y `APLICAR-FUNCION-PRIMITIVA`):
 
-; LEER-ENTRADA:
-; user=> (leer-entrada)
-; (hola
-; mundo)
-; "(hola mundo)"
-; user=> (leer-entrada)
-; 123
-; "123"
 (defn leer-entrada
   "Lee una cadena desde la terminal/consola. Si contiene parentesis de menos al 
  presionar Enter/Intro, se considera que la cadena ingresada es una subcadena 
@@ -552,7 +544,7 @@
   []
   (loop [input (read-line) exp ""]
     (let [nueva-exp (str exp input)]
-      (if (and (not (empty? nueva-exp)) (= 0 (verificar-parentesis nueva-exp)))
+      (if (and nueva-exp (= 0 (verificar-parentesis nueva-exp)))
         nueva-exp
         (recur (read-line) nueva-exp)))))
 
@@ -638,19 +630,17 @@
     (boolean-to-symbol
      (apply = true (map (fn [x] (igual? x primer-elemento)) (rest lista))))))
 
-; user=> (fnc-read ())
-; (hola
-; mundo)
-; (hola mundo)
+
 ; user=> (fnc-read '(1))
 ; (;ERROR: read: Use of I/O ports not implemented)
 ; user=> (fnc-read '(1 2))
 ; (;ERROR: Wrong number of args given #<primitive-procedure read>)
 ; user=> (fnc-read '(1 2 3))
 ; (;ERROR: Wrong number of args given #<primitive-procedure read>)
-;; (defn fnc-read
-;;   "Devuelve la lectura de un elemento de Scheme desde la terminal/consola."
-;; )
+(defn fnc-read
+  "Devuelve la lectura de un elemento de Scheme desde la terminal/consola."
+  [arg]
+  (restaurar-bool (read-string (proteger-bool-en-str (leer-entrada)))))
 
 
 (defn fnc-sumar
