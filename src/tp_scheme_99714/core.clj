@@ -2,11 +2,6 @@
   (:gen-class)
   (:require [clojure.walk :refer [prewalk-replace]]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
-
 (require '[clojure.string :as st :refer [blank? starts-with? ends-with? lower-case]]
          '[clojure.java.io :refer [delete-file reader]]
          '[clojure.walk :refer [postwalk postwalk-replace]])
@@ -82,6 +77,9 @@
 (declare evaluar-clausulas-de-cond)
 (declare evaluar-secuencia-en-cond)
 
+(defn -main
+  [& args]
+  (repl))
 
 ; REPL (read–eval–print loop).
 ; Aridad 0: Muestra mensaje de bienvenida y se llama recursivamente con el ambiente inicial.
@@ -120,30 +118,27 @@
        (imprimir (generar-mensaje-error :error (get (Throwable->map e) :cause)))
        (repl amb)))))                        ; LOOP (Se llama a si misma con el ambiente intacto)
 
-
 (defn evaluar
   "Evalua una expresion `expre` en un ambiente. Devuelve un lista con un valor resultante y un ambiente."
   [expre amb]
   (if (and (seq? expre) (or (empty? expre) (error? expre))) ; si `expre` es () o error, devolverla intacta
     (list expre amb)                                      ; de lo contrario, evaluarla
     (cond
-      (not (seq? expre))             (evaluar-escalar expre amb)
-      (igual? (first expre) 'define) (evaluar-define expre amb)
+      (not (seq? expre)) (evaluar-escalar expre amb)
+      (igual? (first expre) 'if) (evaluar-if expre amb)
+      (igual? (first expre) 'or) (evaluar-or expre amb)
+      (igual? (first expre) 'cond) (evaluar-cond expre amb)
+      (igual? (first expre) 'eval) (evaluar-eval expre amb)
+      (igual? (first expre) 'exit) (evaluar-exit expre amb)
+      (igual? (first expre) 'load) (evaluar-load expre amb)
       (igual? (first expre) 'set!) (evaluar-set! expre amb)
-
-         ;
-         ;
-         ;
-         ; Si la expresion no es la aplicacion de una funcion (es una forma especial, una macro...) debe ser evaluada
-         ; por una funcion de Clojure especifica debido a que puede ser necesario evitar la evaluacion de los argumentos
-         ;
-         ;
-         ;
-
+      (igual? (first expre) 'quote) (evaluar-quote expre amb)
+      (igual? (first expre) 'define) (evaluar-define expre amb)
+      (igual? (first expre) 'lambda) (evaluar-lambda expre amb)
+      (igual? (first expre) 'escalar) (evaluar-escalar expre amb)
       :else (let [res-eval-1 (evaluar (first expre) amb)
                   res-eval-2 (reduce (fn [x y] (let [res-eval-3 (evaluar y (first x))] (cons (second res-eval-3) (concat (next x) (list (first res-eval-3)))))) (cons (list (second res-eval-1)) (next expre)))]
               (aplicar (first res-eval-1) (next res-eval-2) (first res-eval-2))))))
-
 
 (defn aplicar
   "Aplica la funcion `fnc` a la lista de argumentos `lae` evaluados en el ambiente dado."
@@ -193,21 +188,26 @@
   "Aplica una funcion primitiva a una `lae` (lista de argumentos evaluados)."
   [fnc lae amb]
   (cond
+    (= fnc '>) (fnc-mayor lae)
     (= fnc '<) (fnc-menor lae)
     (= fnc '+) (fnc-sumar lae)
-    ;
-    ;
-    ; Si la funcion primitiva esta identificada por un simbolo, puede determinarse mas rapido que hacer con ella
-    ;
-    ;
-    (igual? fnc 'append)  (fnc-append lae)
-    
-    ;
-    ;
-    ; Si la funcion primitiva esta identificada mediante una palabra reservada, debe ignorarse la distincion entre mayusculas y minusculas 
-    ;
-    ;
-
+    (= fnc '-) (fnc-restar lae)
+    (= fnc '>=) (fnc-mayor-o-igual lae)
+    (igual? fnc 'car) (fnc-car lae)
+    (igual? fnc 'cdr) (fnc-cdr lae)
+    (igual? fnc 'env) (fnc-env lae amb)
+    (igual? fnc 'not) (fnc-not lae)
+    (igual? fnc 'cons) (fnc-cons lae)
+    (igual? fnc 'list) (fnc-list lae)
+    (igual? fnc 'list?) (fnc-list? lae)
+    (igual? fnc 'read) (fnc-read lae)
+    (igual? fnc 'null?) (fnc-null? lae)
+    (igual? fnc 'append) (fnc-append lae)
+    (igual? fnc 'equal?) (fnc-equal? lae)
+    (igual? fnc 'lenght) (fnc-length lae)
+    (igual? fnc 'display) (fnc-display lae)
+    (igual? fnc 'newline) (fnc-newline lae)
+    (igual? fnc 'reverse) (fnc-reverse lae)
     :else (generar-mensaje-error :wrong-type-apply fnc)))
 
 
@@ -521,18 +521,19 @@
            :wrong-type-apply (list 'Wrong 'type 'to 'apply fnc)
            ())))
   ([cod fnc nom-arg]
-   (cons (symbol ";ERROR:") (cons (symbol (str fnc ":"))
-                                  (case cod
-                                    :bad-body (list 'bad 'body nom-arg)
-                                    :bad-else-clause (list 'bad 'ELSE 'clause nom-arg)
-                                    :bad-or-missing (list 'bad 'or 'missing 'clauses nom-arg)
-                                    :bad-params (list 'Parameters 'are 'implemented 'only 'as 'lists nom-arg)
-                                    :bad-variable (list 'bad 'variable nom-arg)
-                                    :missing-or-extra (list 'missing 'or 'extra 'expression nom-arg)
-                                    :wrong-type-arg (list 'Wrong 'type 'in 'arg nom-arg)
-                                    :wrong-type-arg1 (list 'Wrong 'type 'in 'arg1 nom-arg)
-                                    :wrong-type-arg2 (list 'Wrong 'type 'in 'arg2 nom-arg)
-                                    ())))))
+   (cons (symbol ";ERROR:")
+         (cons (symbol (str fnc ":"))
+               (case cod
+                 :bad-body (list 'bad 'body nom-arg)
+                 :bad-else-clause (list 'bad 'ELSE 'clause nom-arg)
+                 :bad-or-missing (list 'bad 'or 'missing 'clauses nom-arg)
+                 :bad-params (list 'Parameters 'are 'implemented 'only 'as 'lists nom-arg)
+                 :bad-variable (list 'bad 'variable nom-arg)
+                 :missing-or-extra (list 'missing 'or 'extra 'expression nom-arg)
+                 :wrong-type-arg (list 'Wrong 'type 'in 'arg nom-arg)
+                 :wrong-type-arg1 (list 'Wrong 'type 'in 'arg1 nom-arg)
+                 :wrong-type-arg2 (list 'Wrong 'type 'in 'arg2 nom-arg)
+                 ())))))
 
 ; FUNCIONES QUE DEBEN SER IMPLEMENTADAS PARA COMPLETAR EL INTERPRETE DE SCHEME (ADEMAS DE COMPLETAR `EVALUAR` Y `APLICAR-FUNCION-PRIMITIVA`):
 
@@ -727,7 +728,7 @@
 (defn evaluar-or
   "Evalua una expresion `or`.  Devuelve una lista con el resultado y un ambiente."
   [exp amb]
-  (let [args (rest exp), fixed-args (if (even? (count args)) args (conj args false) ) ]
+  (let [args (rest exp), fixed-args (if (even? (count args)) args (conj args false))]
     (map boolean-to-symbol
          (reduce (fn [[result amb] [arg1 arg2]]
                    (let [arg1-eval (evaluar arg1 amb) result-arg1 (symbol-to-boolean (first arg1-eval))
