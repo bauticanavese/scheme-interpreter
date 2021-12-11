@@ -74,7 +74,7 @@
 
   (testing "restar (3 4 A 6) debe devolver (;ERROR: -: Wrong type in arg2 A)")
   (is (= true (includes? (fnc-restar '(3 4 A 6)) ";ERROR: -: Wrong type in arg2 A")))
-
+  
   (testing "restar lista vacia debe devolver ;ERROR: -: Wrong number of args given")
   (is (= true (includes? (fnc-restar ()) ";ERROR: -: Wrong number of args given"))))
 
@@ -451,20 +451,20 @@
     (is (= "(hola mundo)" (with-in-str input (leer-entrada))))))
 
 (deftest fnc-read-test
-  (testing "raed () con (hola mundo) multilinea debe devolver (hola mundo)")
+  (testing "read () con (hola mundo) multilinea debe devolver (hola mundo)")
   (let [input "(hola
  mundo)"]
     (is (= '(hola mundo) (with-in-str input (fnc-read ())))))
-  
 
+  (testing "read (1) devolver (;ERROR: read: Use of I/O ports not implemented)")
+  (let [error (list (symbol ";ERROR:") (symbol "read:") 'Use 'of 'I/O 'ports 'not 'implemented)]
+    (is (= error (fnc-read '(1)))))
 
+  (testing "read (1 2) debe devolver (;ERROR: Wrong number of args given #<primitive-procedure read>)")
+  (let [error (list (symbol ";ERROR:") 'Wrong 'number 'of 'args 'given (symbol "#<primitive-procedure") (symbol "read>"))]
+    (is (= error (fnc-read '(1 2)))))
 
-
-
-
-
-
-
-
-  )
+  (testing "read (1 2 3) debe devolver (;ERROR: Wrong number of args given #<primitive-procedure read>)")
+  (let [error (list (symbol ";ERROR:") 'Wrong 'number 'of 'args 'given (symbol "#<primitive-procedure") (symbol "read>"))]
+    (is (= error (fnc-read '(1 2 3))))))
 

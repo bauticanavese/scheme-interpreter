@@ -630,17 +630,13 @@
     (boolean-to-symbol
      (apply = true (map (fn [x] (igual? x primer-elemento)) (rest lista))))))
 
-
-; user=> (fnc-read '(1))
-; (;ERROR: read: Use of I/O ports not implemented)
-; user=> (fnc-read '(1 2))
-; (;ERROR: Wrong number of args given #<primitive-procedure read>)
-; user=> (fnc-read '(1 2 3))
-; (;ERROR: Wrong number of args given #<primitive-procedure read>)
 (defn fnc-read
   "Devuelve la lectura de un elemento de Scheme desde la terminal/consola."
-  [arg]
-  (restaurar-bool (read-string (proteger-bool-en-str (leer-entrada)))))
+  [puerto]
+  (cond
+    (= 1 (count puerto)) (generar-mensaje-error :io-ports-not-implemented 'read)
+    (> (count puerto) 1) (generar-mensaje-error :wrong-number-args-prim-proc 'read)
+    :else (restaurar-bool (read-string (proteger-bool-en-str (leer-entrada))))))
 
 
 (defn fnc-sumar
