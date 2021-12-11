@@ -1,6 +1,7 @@
 (ns tp-scheme-99714.core
   (:gen-class)
-  (:require [clojure.walk :refer [prewalk-replace]]))
+  (:require [clojure.walk :refer [prewalk-replace]]
+            [clojure.string :refer [upper-case]]))
 
 (require '[clojure.string :as st :refer [blank? starts-with? ends-with? lower-case]]
          '[clojure.java.io :refer [delete-file reader]]
@@ -557,6 +558,15 @@
        (if (< total 0) (reduced -1) total)))
    0 arg))
 
+(defn lower-case-arg
+  "Devuelve el lower-case en caso que arg sea un string, symbol. En otro caso devuelve arg."
+  [arg]
+  (cond
+    (symbol? arg) (symbol (lower-case arg))
+    (string? arg) (lower-case arg)
+    (seq? arg) (map lower-case-arg arg)
+    :else arg))
+
 (defn actualizar-amb
   "Devuelve un ambiente actualizado con una clave (nombre de la variable o funcion) y su valor. 
   Si el valor es un error, el ambiente no se modifica. De lo contrario, se le carga o reemplaza la nueva informacion."
@@ -564,14 +574,13 @@
   (cond
     (not (symbol? clave)) (throw (AssertionError. "Worng key type."))
     (error? valor) amb
-    :else (apply concat (assoc (apply array-map amb) clave valor))))
-
+    :else (apply concat (assoc (apply array-map amb) (lower-case-arg clave) valor))))
 
 (defn buscar
   "Busca una clave en un ambiente (una lista con claves en las posiciones impares [1, 3, 5...] y valores en las pares [2, 4, 6...]
    y devuelve el valor asociado. Devuelve un error :unbound-variable si no la encuentra."
   [clave amb]
-  (let [valor ((apply array-map amb) clave)]
+  (let [valor ((apply array-map amb) (lower-case-arg clave))]
     (if (nil? valor) (generar-mensaje-error :unbound-variable clave) valor)))
 
 (defn error?
@@ -590,11 +599,6 @@
   "Cambia, en un codigo leido con read-string, %t por #t y %f por #f (y sus respectivas versiones en mayusculas)."
   [arg]
   (prewalk-replace {'%T (symbol "#T"), '%t (symbol "#t"), '%f (symbol "#f"), '%F (symbol "#F")} arg))
-
-(defn lower-case-arg
-  "Devuelve el lower-case en caso que arg sea un string, symbol. En otro caso devuelve arg."
-  [arg]
-  (if (or (symbol? arg) (string? arg)) (lower-case arg) arg))
 
 (defn igual?
   "Verifica la igualdad entre dos elementos al estilo de Scheme (case-insensitive)"

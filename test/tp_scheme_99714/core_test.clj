@@ -138,7 +138,7 @@
 
 (deftest lower-case-arg-test
   (testing "lower case de 'IF debe devolver 'if")
-  (is (= "if" (lower-case-arg 'IF)))
+  (is (= 'if (lower-case-arg 'IF)))
 
   (testing "lower case de 6 debe devolver 6")
   (is (= 6 (lower-case-arg 6))))
