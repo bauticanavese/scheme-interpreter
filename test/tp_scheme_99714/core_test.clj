@@ -133,8 +133,14 @@
   (testing "es igual 'IF a 'IF' debe ser falso")
   (is (= false (igual? 'IF "IF")))
 
-  (testing "es igual 'if a 'IF debe ser falso")
-  (is (= false (igual? 6 "6"))))
+  (testing "es igual 6 a '6' debe ser falso")
+  (is (= false (igual? 6 "6")))
+
+  (testing "es igual '(A b b c) a '(a b B C) debe ser verdadero")
+  (is (= true (igual? '(A b b c) '(a b B C))))
+
+  (testing "es igual '(A B 6 7 c) a '(a b 6 7 C) debe ser verdadero")
+  (is (= true (igual? '(A B 6 7 c) '(a b 6 7 C)))))
 
 (deftest lower-case-arg-test
   (testing "lower case de 'IF debe devolver 'if")
@@ -148,14 +154,21 @@
   (is (= (symbol "#t") (boolean-to-symbol true)))
 
   (testing "false debe parsearse como #f")
-  (is (= (symbol "#f") (boolean-to-symbol false))))
+  (is (= (symbol "#f") (boolean-to-symbol false)))
+  
+  (testing "6 no se debe parsear")
+  (is (= 6 (boolean-to-symbol 6)))
+  )
 
 (deftest symbol-to-boolean-test
   (testing "#t debe dar true")
   (is (= true (symbol-to-boolean (symbol "#t"))))
 
   (testing "#f debe dar false")
-  (is (= false (symbol-to-boolean (symbol "#f")))))
+  (is (= false (symbol-to-boolean (symbol "#f"))))
+
+  (testing "6 no se debe parsear")
+  (is (= 6 (boolean-to-symbol 6))))
 
 (deftest fnc-equal?-test
   (let [true-sym (symbol "#t"), false-sym (symbol "#f")]
@@ -327,6 +340,9 @@
     (is (= expected-exp (restaurar-bool (restaurar-bool (read-string "(and (or %F (or %f %f)) %T)")))))))
 
 (deftest evaluar-define-test
+  (testing "define (w 'w) con amiente (x 1) devuelve  (#<unspecified> (x 1 w w))")
+  (is (= (cons (symbol "#<unspecified>") '(x 1 w w)) (evaluar-define '(define w 'w) '(x 1))))
+  
   (testing "define (f x) (+ x 1) con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda (x) (+ x 1))))")
   (let [expected-result (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (+ x 1)))))]
     (is (= expected-result (evaluar-define '(define (f x) (+ x 1)) '(x 1)))))
@@ -374,7 +390,6 @@
   (testing "define (2 x) con ambiente (x 1) deve devolver ((;ERROR: define: bad  variable (define 2 x)) (x 1))")
   (let [expected-result (list (list (symbol ";ERROR:") (symbol "define:") 'bad 'variable '(define 2 x)) '(x 1))]
     (is (= expected-result (evaluar-define '(define 2 x) '(x 1))))))
-
 
 (deftest evaluar-set!-test
   (testing "evaluar set '(set! x 1) '(x 0) debe actualizar el ambiente (x 1)")

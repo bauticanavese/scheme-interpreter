@@ -205,12 +205,11 @@
     (igual? fnc 'null?) (fnc-null? lae)
     (igual? fnc 'append) (fnc-append lae)
     (igual? fnc 'equal?) (fnc-equal? lae)
-    (igual? fnc 'lenght) (fnc-length lae)
+    (igual? fnc 'length) (fnc-length lae)
     (igual? fnc 'display) (fnc-display lae)
     (igual? fnc 'newline) (fnc-newline lae)
     (igual? fnc 'reverse) (fnc-reverse lae)
     :else (generar-mensaje-error :wrong-type-apply fnc)))
-
 
 (defn fnc-car
   "Devuelve el primer elemento de una lista."
@@ -269,7 +268,6 @@
       (error? ari) ari
       (not (seq? arg1)) (generar-mensaje-error :wrong-type-arg1 'length arg1)
       :else (count arg1))))
-
 
 (defn fnc-list
   "Devuelve una lista formada por los args."
@@ -603,12 +601,14 @@
 (defn igual?
   "Verifica la igualdad entre dos elementos al estilo de Scheme (case-insensitive)"
   [arg1 arg2]
-  (and (= (type arg1) (type arg2)) (= (lower-case-arg arg1) (lower-case-arg arg2))))
+  (cond
+    (and (number? arg1) (number? arg2)) (== arg1 arg2)
+    :else (and (= (type arg1) (type arg2)) (= (lower-case-arg arg1) (lower-case-arg arg2)))))
 
 (defn fnc-append
   "Devuelve el resultado de fusionar listas."
   [lista]
-  (let [invalid-args (filter (fn [x] (not (list? x))) lista)]
+  (let [invalid-args (filter (fn [x] (not (seq? x))) lista)]
     (cond
       (seq invalid-args) (generar-mensaje-error :wrong-type-arg 'append (first invalid-args))
       :else (apply concat lista))))
@@ -710,9 +710,12 @@
       (< (count exp) 3) (list (generar-mensaje-error :missing-or-extra 'define exp) amb)
       (seq? (second exp)) ; syntactic sugar for lambda.
       (let [f-args (rest (second exp)), f-cuerpo (drop 2 exp), f-nombre (first (second exp))]
-        (list (symbol "#<unspecified>") (actualizar-amb amb f-nombre (concat (list 'lambda f-args) f-cuerpo))))
+        (list (symbol "#<unspecified>") 
+              (actualizar-amb amb f-nombre (concat (list 'lambda f-args) f-cuerpo))))
       (not= (count exp) 3) (list (generar-mensaje-error :missing-or-extra 'define exp) amb)
-      :else (list (symbol "#<unspecified>") (actualizar-amb amb (second exp) (nth exp 2))))
+      :else (let [eval-valor (evaluar (nth exp 2) amb)] 
+              (list (symbol "#<unspecified>") 
+                    (actualizar-amb (second eval-valor) (second exp) (first eval-valor)))))
     (catch AssertionError e
       (list (generar-mensaje-error :bad-variable 'define exp) amb))))
 
