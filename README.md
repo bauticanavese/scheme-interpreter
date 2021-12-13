@@ -13,7 +13,10 @@ or
 ### Ejecute jarras
 ```
 (load "jarras")
-(breadth bc)
+(breadth-first bc)
+
+Ingrese el estado inicial: (0 0)
+Ingrese el estado   final: (4 0)
 ```
 ### Test
 `lein test`
