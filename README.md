@@ -1,20 +1,24 @@
 # Scheme Interpreter
+TP Final [75.14 / 95.48] Lenguajes Formales.  
 Alumno: Bautista Canavese 99714  
 
-## Run 
+### Run 
 `java -jar scheme-99714.jar`  
 or  
 `lein run`
 
-## Ejecute demo
+### Ejecute demo
 `(load "demo")`
 
-## Ejecute jarras
+### Ejecute jarras
 ```
 (load "jarras")
-(breadth bc)
+(breadth-first bc)
+
+Ingrese el estado inicial: (0 0)
+Ingrese el estado   final: (4 0)
 ```
-## Test
+### Test
 `lein test`
 
 ## License
