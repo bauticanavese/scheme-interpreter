@@ -341,7 +341,7 @@
 
 (deftest evaluar-define-test
   (testing "define (w 'w) con amiente (x 1) devuelve  (#<unspecified> (x 1 w w))")
-  (is (= (cons (symbol "#<unspecified>") '(x 1 w w)) (evaluar-define '(define w 'w) '(x 1))))
+  (is (= (cons (symbol "#<unspecified>") '((x 1 w w))) (evaluar-define '(define w 'w) '(x 1))))
   
   (testing "define (f x) (+ x 1) con ambiente (x 1) devuelve (#<unspecified> (x 1 f (lambda (x) (+ x 1))))")
   (let [expected-result (cons (symbol "#<unspecified>") '((x 1 f (lambda (x) (+ x 1)))))]

@@ -534,8 +534,6 @@
                  :wrong-type-arg2 (list 'Wrong 'type 'in 'arg2 nom-arg)
                  ())))))
 
-; FUNCIONES QUE DEBEN SER IMPLEMENTADAS PARA COMPLETAR EL INTERPRETE DE SCHEME (ADEMAS DE COMPLETAR `EVALUAR` Y `APLICAR-FUNCION-PRIMITIVA`):
-
 (defn leer-entrada
   "Lee una cadena desde la terminal/consola. Si contiene parentesis de menos al 
  presionar Enter/Intro, se considera que la cadena ingresada es una subcadena 
@@ -557,7 +555,9 @@
    0 arg))
 
 (defn lower-case-arg
-  "Devuelve el lower-case en caso que arg sea un string, symbol. En otro caso devuelve arg."
+  "Devuelve el lower-case de arg en caso que arg sea un string, symbol.
+  Si es una lista aplica lower-case a cada elemento de la misma.
+  En otro caso devuelve arg."
   [arg]
   (cond
     (symbol? arg) (symbol (lower-case arg))
@@ -603,7 +603,7 @@
   [arg1 arg2]
   (cond
     (and (number? arg1) (number? arg2)) (== arg1 arg2)
-    :else (and (= (type arg1) (type arg2)) (= (lower-case-arg arg1) (lower-case-arg arg2)))))
+    :else (= (lower-case-arg arg1) (lower-case-arg arg2))))
 
 (defn fnc-append
   "Devuelve el resultado de fusionar listas."
@@ -753,5 +753,4 @@
       (error? (buscar (second exp) amb)) (list (generar-mensaje-error :unbound-variable clave) amb)
       :else (list (symbol "#<unspecified>") (actualizar-amb amb clave (resultado-evaluar amb valor))))))
 
-; Al terminar de cargar el archivo en el REPL de Clojure, se debe devolver true.
-
+true
