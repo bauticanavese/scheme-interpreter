@@ -1,7 +1,4 @@
 (ns tp-scheme-99714.core
-  (:import [javax.sound.midi MidiSystem
-            Synthesizer
-            MidiChannel])
   (:gen-class)
   (:require [clojure.walk :refer [prewalk-replace]]))
 
