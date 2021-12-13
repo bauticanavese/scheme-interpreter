@@ -1,4 +1,21 @@
-# tp-scheme-99714
+# Scheme Interpreter
+Alumno: Bautista Canavese 99714  
+
+## Run 
+`java -jar scheme-99714.jar`  
+or  
+`lein run`
+
+## Ejecute demo
+`(load "demo")`
+
+## Ejecute jarras
+```
+(load "jarras")
+(breadth bc)
+```
+## Test
+`lein test`
 
 ## License
 

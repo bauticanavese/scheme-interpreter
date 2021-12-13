@@ -1,7 +1,9 @@
 (ns tp-scheme-99714.core
+  (:import [javax.sound.midi MidiSystem
+            Synthesizer
+            MidiChannel])
   (:gen-class)
-  (:require [clojure.walk :refer [prewalk-replace]]
-            [clojure.string :refer [upper-case]]))
+  (:require [clojure.walk :refer [prewalk-replace]]))
 
 (require '[clojure.string :as st :refer [blank? starts-with? ends-with? lower-case]]
          '[clojure.java.io :refer [delete-file reader]]
@@ -540,10 +542,13 @@
  y el ingreso continua. De lo contrario, se la devuelve completa."
   []
   (loop [input (read-line) exp ""]
-    (let [nueva-exp (str exp input)]
-      (if (and nueva-exp (= 0 (verificar-parentesis nueva-exp)))
-        nueva-exp
-        (recur (read-line) nueva-exp)))))
+    (let [nueva-exp (str exp input), verificar-parentesis-res (verificar-parentesis nueva-exp)]
+      (cond
+        (== 0 verificar-parentesis-res) nueva-exp
+        (== -1 verificar-parentesis-res)
+        (let [warning-paren (list (apply str (generar-mensaje-error :warning-paren)))]
+          (last (list (fnc-display warning-paren) (newline) nueva-exp)))
+        :else (recur (read-line) nueva-exp)))))
 
 (defn verificar-parentesis
   "Cuenta los parentesis en una cadena, sumando 1 si `(`, restando 1 si `)`. Si el contador se hace negativo, para y retorna -1."
